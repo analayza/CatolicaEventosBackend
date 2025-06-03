@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id_user      String       @id @default(uuid())
+  name         String       @db.VarChar(100)
+  email        String       @unique @db.VarChar(150)
+  password     String       @db.VarChar(255)
+  created_at   DateTime     @default(now())
+
+  enrollments  Enrollment[] @relation("UserEnrollments")
+}
+
+model Admin {
+  id_admin     String   @id @default(uuid())
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(150)
+  password     String   @db.VarChar(255)
+  course       String   @db.VarChar(150)
+  created_at   DateTime @default(now())
+
+  events       Event[]
+}
+
+model Event {
+  id_event         String     @id @default(uuid())
+  name             String     @db.VarChar(150)
+  description      String
+  start_date       DateTime
+  end_date         DateTime
+  location         String     @db.VarChar(200)
+  status           String     @db.VarChar(30)
+  image_url        String     @db.VarChar(255)
+  sponsor_pitch    String     @db.VarChar(1000)
+  responsible_course String   @db.VarChar(255)
+
+  id_admin         String
+  admin            Admin      @relation(fields: [id_admin], references: [id_admin])
+
+  activities       Activity[] @relation("EventActivities")
+}
+
+model Activity {
+  id_activity   String     @id @default(uuid())
+  id_event      String
+  name          String     @db.VarChar(150)
+  description   String
+  speaker       String     @db.VarChar(100)
+  date          DateTime
+  time          String     @db.VarChar(10)
+  slots         Int
+  workload      Int
+  location      String
+  status        String     @db.VarChar(30)
+  price         Decimal     @db.Decimal(10,2)
+
+  event         Event       @relation("EventActivities", fields: [id_event], references: [id_event])
+  enrollments   Enrollment[] @relation("ActivityEnrollments")
+}
+
+model Enrollment {
+  id_enrollment   String     @id @default(uuid())
+  id_user         String
+  id_activity     String
+  enrollment_date DateTime   @default(now())
+  status          String     @db.VarChar(30)
+
+  user            User       @relation("UserEnrollments", fields: [id_user], references: [id_user])
+  activity        Activity   @relation("ActivityEnrollments", fields: [id_activity], references: [id_activity])
+  payments        Payment[]  @relation("EnrollmentPayments")
+  certificates    Certificate[] @relation("EnrollmentCertificates")
+}
+
+model Payment {
+  id_payment      String   @id @default(uuid())
+  id_enrollment   String
+  transaction_id  String   @db.VarChar(100)
+  amount          Decimal  @db.Decimal(10,2)
+  method          String
+  status          String
+  payment_date    DateTime
+
+  enrollment      Enrollment @relation("EnrollmentPayments", fields: [id_enrollment], references: [id_enrollment])
+}
+
+model Certificate {
+  id_certificate   String   @id @default(uuid())
+  id_enrollment    String
+  student_name     String   @db.VarChar(100)
+  activity_name    String   @db.VarChar(150)
+  workload         Int
+  issued_date      DateTime
+  validation_code  String   @db.VarChar(50)
+  pdf_link         String   @db.VarChar(255)
+
+  enrollment       Enrollment @relation("EnrollmentCertificates", fields: [id_enrollment], references: [id_enrollment])
+}
+
+model Sponsor {
+  id             String   @id @default(uuid())
+  name           String
+  website        String
+  amount         Decimal  @db.Decimal(10,2)
+  email          String
+  phone          String
+  description    String
+  logo_url       String
+  cnpj           Int
+  created_at     DateTime @default(now())
+}

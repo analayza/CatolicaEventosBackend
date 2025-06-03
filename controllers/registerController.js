@@ -1,0 +1,23 @@
+import registerService from "../services/registerService.js";
+
+export default async function registerController(req, res) {
+    try {
+        const { name, email, password } = req.body;
+        const user = await registerService(name, email, password);
+        res.status(201).json({
+            user
+        })
+    } catch (error) {
+        console.error("Erro registerController", error);
+
+        if (error.message === 'E-mail já está em uso.') {
+            return res.status(409).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro ao user",
+            message: error.message
+        });
+    }
+}
