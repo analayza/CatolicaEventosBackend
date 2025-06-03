@@ -1,4 +1,4 @@
-import loginRepository from "../repository/loginRepository.js";
+import loginRepository from "../../repository/loginRepository.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';

@@ -1,4 +1,4 @@
-import registerService from "../services/registerService.js";
+import registerService from "../services/auth/registerService.js";
 
 export default async function registerController(req, res) {
     try {
@@ -16,7 +16,7 @@ export default async function registerController(req, res) {
             })
         }
         return res.status(500).json({
-            error: "Erro ao user",
+            error: "Erro no servidor",
             message: error.message
         });
     }

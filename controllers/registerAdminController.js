@@ -1,4 +1,4 @@
-import registerAdminService from "../services/registerAdminService.js";
+import registerAdminService from "../services/auth/registerAdminService.js";
 
 export default async function registerAdminController(req, res) {
     try {

@@ -1,4 +1,4 @@
-import loginService from "../services/loginService.js";
+import loginService from "../services/auth/loginService.js";
 
 export default async function loginController(req, res) {
     try {

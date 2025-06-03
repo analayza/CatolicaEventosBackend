@@ -1,5 +1,5 @@
-import { registerAdminRepository, findAdminByEmail } from "../repository/registerAdminRepository.js";
-import {findUserByEmail} from "../repository/registerRepository.js";
+import { registerAdminRepository, findAdminByEmail } from "../../repository/registerAdminRepository.js";
+import {findUserByEmail} from "../../repository/registerRepository.js";
 import bcrypt from 'bcryptjs';
 
 export default async function registerAdminService(name, email, password, course) {
