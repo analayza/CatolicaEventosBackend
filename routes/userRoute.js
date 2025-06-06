@@ -1,7 +1,8 @@
 import express from "express";
-import { findUserController } from "../controllers/userController.js";
+import { findUserController, updateUserController } from "../controllers/userController.js";
 
 const route = express.Router();
-route.get('/findUser/:id', findUserController);
+route.get('/find/:id', findUserController);
+route.patch('/update/:id', updateUserController);
 
 export default route;

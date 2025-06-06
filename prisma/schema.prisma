@@ -14,24 +14,26 @@ datasource db {
 }
 
 model User {
-  id_user      String       @id @default(uuid())
-  name         String       @db.VarChar(100)
-  email        String       @unique @db.VarChar(150)
-  password     String       @db.VarChar(255)
-  created_at   DateTime     @default(now())
+  id_user         String       @id @default(uuid())
+  name            String       @db.VarChar(100)
+  email           String       @unique @db.VarChar(150)
+  password        String       @db.VarChar(255)
+  profile_picture String?      @db.VarChar(255) // Foto de perfil opcional
+  created_at      DateTime     @default(now())
 
-  enrollments  Enrollment[] @relation("UserEnrollments")
+  enrollments     Enrollment[] @relation("UserEnrollments")
 }
 
 model Admin {
-  id_admin     String   @id @default(uuid())
-  name         String   @db.VarChar(100)
-  email        String   @unique @db.VarChar(150)
-  password     String   @db.VarChar(255)
-  course       String   @db.VarChar(150)
-  created_at   DateTime @default(now())
+  id_admin        String   @id @default(uuid())
+  name            String   @db.VarChar(100)
+  email           String   @unique @db.VarChar(150)
+  password        String   @db.VarChar(255)
+  course          String   @db.VarChar(150)
+  profile_picture String?  @db.VarChar(255) // Foto de perfil opcional
+  created_at      DateTime @default(now())
 
-  events       Event[]
+  events          Event[]
 }
 
 model Event {

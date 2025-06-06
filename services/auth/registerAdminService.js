@@ -1,11 +1,12 @@
-import { registerAdminRepository, findAdminByEmail } from "../../repository/registerAdminRepository.js";
-import {findUserByEmail} from "../../repository/registerRepository.js";
 import bcrypt from 'bcryptjs';
+import { findAdminByEmailRepository } from "../../repository/userAdminRepository.js";
+import { findUserByEmailRepository} from "../../repository/userRepository.js";
+import { registerAdminRepository } from '../../repository/registerAdminRepository.js';
 
 export default async function registerAdminService(name, email, password, course) {
     try {
-        const adminExists = await findAdminByEmail(email);
-        const userExists = await findUserByEmail(email);
+        const adminExists = await findAdminByEmailRepository(email);
+        const userExists = await findUserByEmailRepository(email);
 
         if (adminExists || userExists) {
             throw new Error('E-mail já está em uso.');

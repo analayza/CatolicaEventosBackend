@@ -1,8 +1,9 @@
-import { findUserRepository } from "../../repository/userRepository.js";
+import { findUserByIdRepository } from "../../repository/userRepository.js";
+
 
 export async function findUserService(id) {
     try {
-        const user = await findUserRepository(id);
+        const user = await findUserByIdRepository(id);
         if (!user) {
             throw new Error("Usuário não encontrado");
         }
@@ -14,3 +15,4 @@ export async function findUserService(id) {
         throw new Error("Falha no servidor");
     }
 }
+

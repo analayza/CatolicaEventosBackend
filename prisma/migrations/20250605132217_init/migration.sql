@@ -4,6 +4,7 @@ CREATE TABLE "User" (
     "name" VARCHAR(100) NOT NULL,
     "email" VARCHAR(150) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
+    "profile_picture" VARCHAR(255),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id_user")
@@ -16,6 +17,7 @@ CREATE TABLE "Admin" (
     "email" VARCHAR(150) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
     "course" VARCHAR(150) NOT NULL,
+    "profile_picture" VARCHAR(255),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Admin_pkey" PRIMARY KEY ("id_admin")
