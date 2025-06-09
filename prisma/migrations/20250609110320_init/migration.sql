@@ -35,6 +35,7 @@ CREATE TABLE "Event" (
     "image_url" VARCHAR(255) NOT NULL,
     "sponsor_pitch" VARCHAR(1000) NOT NULL,
     "responsible_course" VARCHAR(255) NOT NULL,
+    "certificate_background_url" VARCHAR(255),
     "id_admin" TEXT NOT NULL,
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id_event")
@@ -90,7 +91,6 @@ CREATE TABLE "Certificate" (
     "activity_name" VARCHAR(150) NOT NULL,
     "workload" INTEGER NOT NULL,
     "issued_date" TIMESTAMP(3) NOT NULL,
-    "validation_code" VARCHAR(50) NOT NULL,
     "pdf_link" VARCHAR(255) NOT NULL,
 
     CONSTRAINT "Certificate_pkey" PRIMARY KEY ("id_certificate")

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 const SECRET_KEY = process.env.SECRET_KEY;
 
 function authMiddleware(req, res, next){
-    const token = req.header('Autorization')?.replace('Bearer', '').trim();
+    const token = req.header('Authorization')?.replace('Bearer', '').trim();
 
     if(!token){
         return  res.status(400).json({error: "Token não fornecido!"});

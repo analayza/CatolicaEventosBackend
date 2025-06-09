@@ -47,6 +47,7 @@ model Event {
   image_url        String     @db.VarChar(255)
   sponsor_pitch    String     @db.VarChar(1000)
   responsible_course String   @db.VarChar(255)
+  certificate_background_url String? @db.VarChar(255)
 
   id_admin         String
   admin            Admin      @relation(fields: [id_admin], references: [id_admin])
@@ -104,7 +105,6 @@ model Certificate {
   activity_name    String   @db.VarChar(150)
   workload         Int
   issued_date      DateTime
-  validation_code  String   @db.VarChar(50)
   pdf_link         String   @db.VarChar(255)
 
   enrollment       Enrollment @relation("EnrollmentCertificates", fields: [id_enrollment], references: [id_enrollment])
