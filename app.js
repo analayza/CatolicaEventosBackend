@@ -4,6 +4,7 @@ import registerRoute from '../backend/routes/registerRoute.js';
 import registerAdminRoute from '../backend/routes/registerAdminRoute.js';
 import userRoute from '../backend/routes/userRoute.js';
 import userAdminRoute from '../backend/routes/userAdminRoute.js';
+import eventRoute from '../backend/routes/eventRoute.js';
 
 const app = express();
 app.use(express.json());
@@ -13,5 +14,6 @@ app.use('/auth', registerRoute);
 app.use('/auth', registerAdminRoute);
 app.use('/user', userRoute);
 app.use('/admin', userAdminRoute);
+app.use('/event', eventRoute);
 
 export default app;
