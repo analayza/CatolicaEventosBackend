@@ -3,8 +3,8 @@ import { updateUserAdminService } from "../services/userAdmin/updateUserAdminSer
 
 export async function findUserAdminController(req, res) {
     try{
-        const {id} = req.params;
-        const admin = await findUserAdminService(id);
+        const id_admin = req.user.userId;
+        const admin = await findUserAdminService(id_admin);
         return res.status(200).json({
             admin
         })
@@ -23,9 +23,9 @@ export async function findUserAdminController(req, res) {
 
 export async function updateUserAdminController(req, res) {
     try{
-        const {id} = req.params;
+        const id_admin = req.user.userId;
         const admin = req.body;
-        const updatedData = await updateUserAdminService(id, admin);
+        const updatedData = await updateUserAdminService(id_admin,admin);
         return res.status(200).json({
             updatedData
         })

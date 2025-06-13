@@ -1,4 +1,4 @@
-import {PrismaClient} from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -28,8 +28,16 @@ export async function createEventRepository(name, description, start_date, end_d
     }
 }
 
-export async function findEventByIdRepository(id) {
-    return await prisma.event.findUnique({ where: { id_event: id } });
+export async function findEventByIdRepository(id_event, id_admin) {
+    return await prisma.event.findFirst({
+        where: {
+            id_event,
+            id_admin
+        },
+        include: {
+            activities: true,
+        }
+    });
 }
 
 export async function listAllEventsRepository() {
@@ -120,10 +128,10 @@ export async function disableEvent(id_event) {
     try {
         const updateDisableEvent = await prisma.event.update({
             where: { id_event: id_event },
-            data: {status: "disabled"}
+            data: { status: "disabled" }
         })
         return updateDisableEvent;
-    }catch(error){
+    } catch (error) {
         console.error("Erro disableEvent");
         throw new Error("Erro ao tentar desabilitar um evento" + error.message);
 

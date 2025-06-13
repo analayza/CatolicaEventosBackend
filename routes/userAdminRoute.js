@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 import validateAdminType from "../middlewares/validateAdminType.js";
 
 const route = express.Router();
-route.get('/find/:id',authMiddleware, validateAdminType, findUserAdminController);
-route.patch('/update/:id',authMiddleware,validateAdminType, updateUserAdminController);
+route.get('/find',authMiddleware, validateAdminType, findUserAdminController);
+route.patch('/update',authMiddleware,validateAdminType, updateUserAdminController);
 
 export default route;

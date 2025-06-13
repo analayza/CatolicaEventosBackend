@@ -3,7 +3,7 @@ import { findUserController, updateUserController } from "../controllers/userCon
 import authMiddleware from "../middlewares/authMiddleware.js";
 
 const route = express.Router();
-route.get('/find/:id',authMiddleware, findUserController);
-route.patch('/update/:id',authMiddleware, updateUserController);
+route.get('/find',authMiddleware, findUserController);
+route.patch('/update',authMiddleware, updateUserController);
 
 export default route;

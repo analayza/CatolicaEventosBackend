@@ -3,7 +3,7 @@ import { updateUserService } from '../services/user/updateUserService.js';
 
 export async function findUserController(req, res) {
     try {
-        const { id } = req.params;
+        const id = req.user.userId;
         const user = await findUserService(id);
         res.status(200).json({
             user
@@ -25,7 +25,7 @@ export async function findUserController(req, res) {
 
 export async function updateUserController(req, res) {
     try {
-        const {id} = req.params;
+        const id = req.user.userId;
         const updatedData = req.body;
         const updateUser = await updateUserService(id, updatedData);
         res.status(200).json({
