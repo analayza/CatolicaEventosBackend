@@ -1,5 +1,8 @@
 import createEventService from "../services/event/createEventService.js";
 import findEventByIdService from "../services/event/findEventByIdService.js";
+import listAllEventsByAdminService from "../services/event/listAllEventsByAdminService.js";
+import listAllEventsService from "../services/event/listAllEventsService.js";
+import updateEventService from "../services/event/updateEventService.js";
 
 export async function createEventController(req, res) {
     try {
@@ -30,9 +33,8 @@ export async function createEventController(req, res) {
 
 export async function findEventByIdController(req, res) {
     try {
-        const id_admin = req.user.userId;
-        const {id_event} = req.params;
-        const eventFound = await findEventByIdService(id_event, id_admin);
+        const { id_event } = req.params;
+        const eventFound = await findEventByIdService(id_event);
         return res.status(200).json({
             eventFound
         })
@@ -43,6 +45,69 @@ export async function findEventByIdController(req, res) {
             })
         }
         if (error.message === "Acesso não autorizado a este evento.") {
+            return res.status(403).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function listAllEventsController(req, res) {
+    try {
+        const allEvents = await listAllEventsService();
+        return res.status(200).json({
+            allEvents
+        })
+    } catch (error) {
+        if (error.message === "Não existe eventos.") {
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function listAllEventsByAdminController(req, res) {
+    try {
+        const id_admin = req.user.userId;
+        const allEventsAdmin = await listAllEventsByAdminService(id_admin);
+        return res.status(200).json({
+            allEventsAdmin
+        })
+    } catch (error) {
+        if (error.message === "O administrador ainda não criou nenhum evento.") {
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function updateEventController(req, res) {
+    try {
+        const {id_event} = req.params;
+        const updateDataEvent = req.body;
+        const id_admin = req.user.userId;
+        const updateEvent = await updateEventService(id_event, updateDataEvent, id_admin);
+        return res.status(200).json({
+             updateEvent
+        })
+    } catch (error) {
+        if (error.message === "Evento não encontrado") {
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        if (error.message === "Você não tem permissão para editar este evento.") {
             return res.status(403).json({
                 error: error.message
             })

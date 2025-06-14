@@ -28,11 +28,10 @@ export async function createEventRepository(name, description, start_date, end_d
     }
 }
 
-export async function findEventByIdRepository(id_event, id_admin) {
-    return await prisma.event.findFirst({
+export async function findEventByIdRepository(id_event) { //Busca o evento e atividades em especifico ao clicar em um evento
+    return await prisma.event.findMany({
         where: {
             id_event,
-            id_admin
         },
         include: {
             activities: true,
@@ -40,9 +39,24 @@ export async function findEventByIdRepository(id_event, id_admin) {
     });
 }
 
-export async function listAllEventsRepository() {
+export async function listAllEventsRepository() { //Lista todos os eventos  
     try {
-        const events = await prisma.event.findMany();
+        const events = await prisma.event.findMany({
+        });
+        return events;
+    } catch (error) {
+        console.error("Erro listEvents", error);
+        throw new Error("Erro ao listar Eventos" + error.message);
+    }
+}
+
+export async function listAllEventsByAdminRepository(id_admin) { //Lista todos os eventos que um admin criou 
+    try {
+        const events = await prisma.event.findMany({
+            where: {
+                id_admin
+            }
+        });
         return events;
     } catch (error) {
         console.error("Erro listEvents", error);
@@ -74,53 +88,6 @@ export async function deleteEventRepository(id) {
     } catch (error) {
         console.error("Erro deleteEvent", error);
         throw new Error("Erro ao deletar Evento" + error.message);
-    }
-}
-
-export async function findEventByIdAdmin(id_admin) {
-    try {
-        const eventsAdmin = await prisma.event.findMany({
-            where: { id_admin: id_admin },
-            include: {
-                activities: true,
-            }
-        })
-        return eventsAdmin;
-    } catch (error) {
-        console.error("Erro findEventByIdAdmin");
-        throw new Error("Erro ao buscar os eventos criados por um admin" + error.message);
-    }
-}
-
-export async function findEventByIdUser(id_user) {
-    try {
-        const eventsUser = await prisma.event.findMany({
-            where: {
-                activities: {
-                    some: {
-                        enrollments: {
-                            some: {
-                                id_user: id_user
-                            }
-                        }
-                    }
-                }
-            }, include: {
-                activities: {
-                    include: {
-                        enrollments: {
-                            where: {
-                                id_user: id_user
-                            }
-                        }
-                    }
-                }
-            }
-        })
-        return eventsUser;
-    } catch (error) {
-        console.error("Erro findEventByUser");
-        throw new Error("Erro ao buscar eventos que um user participa" + error.message);
     }
 }
 
