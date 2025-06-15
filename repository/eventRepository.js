@@ -29,7 +29,7 @@ export async function createEventRepository(name, description, start_date, end_d
 }
 
 export async function findEventByIdRepository(id_event) { //Busca o evento e atividades em especifico ao clicar em um evento
-    return await prisma.event.findMany({
+    return await prisma.event.findUnique({
         where: {
             id_event,
         },
@@ -39,9 +39,12 @@ export async function findEventByIdRepository(id_event) { //Busca o evento e ati
     });
 }
 
-export async function listAllEventsRepository() { //Lista todos os eventos  
+export async function listAllEventsRepository() { //Lista todos os eventos ativos
     try {
         const events = await prisma.event.findMany({
+            where: {
+                status: 'active'
+            }
         });
         return events;
     } catch (error) {
@@ -77,7 +80,7 @@ export async function updateEventRepository(id, updateDataEvent) {
     }
 }
 
-export async function deleteEventRepository(id) {
+export async function deleteEventRepository(id) { //testar
     try {
         const deletedEvent = await prisma.event.delete({
             where: {
@@ -91,7 +94,7 @@ export async function deleteEventRepository(id) {
     }
 }
 
-export async function disableEvent(id_event) {
+export async function disableEvent(id_event) { 
     try {
         const updateDisableEvent = await prisma.event.update({
             where: { id_event: id_event },

@@ -1,4 +1,6 @@
 import createEventService from "../services/event/createEventService.js";
+import deleteEventService from "../services/event/deleteEventService.js";
+import disableEventService from "../services/event/disableEventService.js";
 import findEventByIdService from "../services/event/findEventByIdService.js";
 import listAllEventsByAdminService from "../services/event/listAllEventsByAdminService.js";
 import listAllEventsService from "../services/event/listAllEventsService.js";
@@ -94,12 +96,12 @@ export async function listAllEventsByAdminController(req, res) {
 
 export async function updateEventController(req, res) {
     try {
-        const {id_event} = req.params;
+        const { id_event } = req.params;
         const updateDataEvent = req.body;
         const id_admin = req.user.userId;
         const updateEvent = await updateEventService(id_event, updateDataEvent, id_admin);
         return res.status(200).json({
-             updateEvent
+            updateEvent
         })
     } catch (error) {
         if (error.message === "Evento não encontrado") {
@@ -108,6 +110,54 @@ export async function updateEventController(req, res) {
             })
         }
         if (error.message === "Você não tem permissão para editar este evento.") {
+            return res.status(403).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function disableEventController(req, res) {
+    try {
+        const id_admin = req.user.userId;
+        const { id_event } = req.params;
+        const eventDesible = await disableEventService(id_event, id_admin);
+        return res.status(200).json({
+            eventDesible
+        })
+    } catch (error) {
+        if (error.message === "Evento não encontrado") {
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        if (error.message === "Você não tem permissão para desativar este evento.") {
+            return res.status(403).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function deleteEventController(req, res) {
+    try{
+        const id_admin = req.user.userId;
+        const {id_event} = req.params;
+        await deleteEventService(id_event, id_admin);
+        return res.status(204).send();
+    }catch(error){
+        if(error.message === "Evento não encontrado"){
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        if(error.message === "Você não tem permissão para deletar este evento."){
             return res.status(403).json({
                 error: error.message
             })
