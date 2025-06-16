@@ -57,7 +57,7 @@ export default async function createEventService(eventData) {
         }
 
         const status = "active";
-        const newEvent = await createEventRepository(name, description, start_date, end_date, location,
+        const newEvent = await createEventRepository(name, description, data_start_date, data_end_date, location,
             status, image_url, certificate_background_url, sponsor_pitch, responsible_course, id_admin)
         return newEvent;
 
