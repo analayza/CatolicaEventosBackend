@@ -1,7 +1,7 @@
 import { createActivityRepository } from "../../repository/activityRepository.js";
 import { findEventByIdRepository } from "../../repository/eventRepository.js";
 
-export default async function createActivityService(activityData, id_admin) {
+export default async function createActivityService(activityData, id_admin, id_event) {
     try {
         const {
             name,
@@ -13,7 +13,6 @@ export default async function createActivityService(activityData, id_admin) {
             workload,
             location,
             price,
-            id_event
         } = activityData;
 
         const existingevent = await findEventByIdRepository(id_event);
@@ -24,21 +23,6 @@ export default async function createActivityService(activityData, id_admin) {
 
         if(existingevent.id_admin !== id_admin){
             throw new Error("Você não tem permissão para criar essa atividade");
-        }
-
-        if (
-            !name || name.trim() === "" ||
-            !description || description.trim() === "" ||
-            !speaker || speaker.trim() === "" ||
-            !location || location.trim() === "" ||
-            !date || date.trim() === "" ||
-            !time || time.trim() === "" ||
-            slots === undefined ||
-            workload === undefined ||
-            price === undefined ||
-            !id_event
-        ) {
-            throw new Error("Todos os campos são obrigatórios.");
         }
 
         const dateActivity = new Date(date);
@@ -52,7 +36,7 @@ export default async function createActivityService(activityData, id_admin) {
             throw new Error("Data inválida, está fora do periodo do evento.");
         }
 
-        if (slots <= 0 || workload <= 0 || price <= 0) {
+        if (slots <= 0 || workload <= 0) {
             throw new Error("Valores numéricos inválidos.");
         }
 
@@ -62,7 +46,6 @@ export default async function createActivityService(activityData, id_admin) {
 
     } catch (error) {
         if (error.message === "O evento não existe" ||
-            error.message === "Todos os campos são obrigatórios." ||
             error.message === "Data inválida." ||
             error.message === "Data inválida! A data da atividade deve ser no futuro." ||
             error.message === "Valores numéricos inválidos." ||

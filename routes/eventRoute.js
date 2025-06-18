@@ -5,7 +5,7 @@ import validateAdminType from '../middlewares/validateAdminType.js';
 
 const route = express.Router();
 route.post('/create', authMiddleware, validateAdminType, createEventController);
-route.get('/find/:id_event', authMiddleware, findEventByIdController);
+route.get('/find/:id_event', findEventByIdController);
 route.get('/listAll', listAllEventsController);
 route.get('/listAllByAdmin',authMiddleware, validateAdminType, listAllEventsByAdminController);
 route.patch('/update/:id_event', authMiddleware, validateAdminType, updateEventController);

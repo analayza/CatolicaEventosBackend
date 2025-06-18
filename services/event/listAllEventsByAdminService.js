@@ -1,4 +1,3 @@
-import e from "cors";
 import { listAllEventsByAdminRepository } from "../../repository/eventRepository.js";
 
 export default async function listAllEventsByAdminService(id_admin) {
