@@ -34,7 +34,6 @@ CREATE TABLE "Event" (
     "status" VARCHAR(30) NOT NULL,
     "image_url" VARCHAR(255) NOT NULL,
     "sponsor_pitch" VARCHAR(1000) NOT NULL,
-    "responsible_course" VARCHAR(255) NOT NULL,
     "certificate_background_url" VARCHAR(255),
     "id_admin" TEXT NOT NULL,
 

@@ -4,7 +4,7 @@ const createActivitySchema = yup.object().shape({
     name: yup
         .string()
         .trim()
-        .min(4, 'O nome deve ter no mínimo 4 caracteres')
+        .min(3, 'O nome deve ter no mínimo 3 caracteres')
         .required('Campo obrigatório'),
 
     description: yup
@@ -58,7 +58,7 @@ const updateActivitySchema = yup.object().shape({
     name: yup
         .string()
         .trim()
-        .min(4, 'O nome deve ter no mínimo 4 caracteres'),
+        .min(3, 'O nome deve ter no mínimo 3 caracteres'),
 
     description: yup
         .string()

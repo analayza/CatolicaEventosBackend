@@ -3,7 +3,8 @@ import { findAdminByEmailRepository } from "../../repository/userAdminRepository
 import { findUserByEmailRepository} from "../../repository/userRepository.js";
 import { registerAdminRepository } from '../../repository/registerAdminRepository.js';
 
-export default async function registerAdminService(name, email, password, course) {
+export default async function registerAdminService(adminData) {
+    const { name, email, password, course } = adminData;
     try {
         const adminExists = await findAdminByEmailRepository(email);
         const userExists = await findUserByEmailRepository(email);

@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function createEventRepository(name, description, start_date, end_date, location,
-    status, image_url, certificate_background_url, sponsor_pitch, responsible_course, id_admin) {
+    status, image_url, certificate_background_url, sponsor_pitch, id_admin) {
     try {
         const event = await prisma.event.create({
             data: {
@@ -16,7 +16,6 @@ export async function createEventRepository(name, description, start_date, end_d
                 image_url,
                 certificate_background_url,
                 sponsor_pitch,
-                responsible_course,
                 id_admin
             }
         })

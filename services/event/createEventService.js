@@ -1,8 +1,7 @@
 import { createEventRepository } from "../../repository/eventRepository.js";
 import { findUserAdminByIdRepository } from "../../repository/userAdminRepository.js";
 
-export default async function createEventService(eventData) {
-
+export default async function createEventService(eventData, id_admin) {
     try {
         const {
             name,
@@ -12,9 +11,7 @@ export default async function createEventService(eventData) {
             location,
             image_url,
             certificate_background_url,
-            sponsor_pitch,
-            responsible_course,
-            id_admin
+            sponsor_pitch
         } = eventData;
 
         const admin = await findUserAdminByIdRepository(id_admin);
@@ -22,25 +19,10 @@ export default async function createEventService(eventData) {
             throw new Error("O usuário não existe.");
         }
 
-        if (
-            !name || name.trim() === "" ||
-            !description || description.trim() === "" ||
-            !start_date ||
-            !end_date ||
-            !location || location.trim() === "" ||
-            !image_url || image_url.trim() === "" ||
-            !certificate_background_url || certificate_background_url.trim() === "" ||
-            !sponsor_pitch || sponsor_pitch.trim() === "" ||
-            !responsible_course || responsible_course.trim() === "" ||
-            !id_admin
-        ) {
-            throw new Error("Todos os campos são obrigatórios.");
-        }
-
         const data_start_date = new Date(start_date);
         const data_end_date = new Date(end_date);
 
-        if (isNaN(data_start_date) || isNaN(data_end_date)) {
+        if (isNaN(data_start_date.getTime()) || isNaN(data_end_date.getTime())) {
             throw new Error("Data inválida.");
         }
 
@@ -58,7 +40,7 @@ export default async function createEventService(eventData) {
 
         const status = "active";
         const newEvent = await createEventRepository(name, description, data_start_date, data_end_date, location,
-            status, image_url, certificate_background_url, sponsor_pitch, responsible_course, id_admin)
+            status, image_url, certificate_background_url, sponsor_pitch, id_admin)
         return newEvent;
 
     } catch (error) {

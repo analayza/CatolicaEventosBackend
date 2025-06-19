@@ -5,16 +5,24 @@ import findEventByIdService from "../services/event/findEventByIdService.js";
 import listAllEventsByAdminService from "../services/event/listAllEventsByAdminService.js";
 import listAllEventsService from "../services/event/listAllEventsService.js";
 import updateEventService from "../services/event/updateEventService.js";
+import { ValidationError } from "yup";
+import { createEventSchema } from '../schemas/eventSchema.js';
+import { updateEventSchema } from '../schemas/eventSchema.js';
 
 export async function createEventController(req, res) {
     try {
         const id_admin = req.user.userId;
-        const eventData = { ...req.body, id_admin };
-        const createdEvent = await createEventService(eventData);
+        const eventData = await createEventSchema.validate(req.body, { abortEarly: false })
+        const createdEvent = await createEventService(eventData, id_admin);
         return res.status(201).json({
             createdEvent
         })
     } catch (error) {
+        if (error instanceof ValidationError) {
+            return res.status(400).json({
+                error: error.errors
+            })
+        }
         if (error.message === "O usuário não existe.") {
             return res.status(404).json({
                 error: error.message
@@ -97,13 +105,25 @@ export async function listAllEventsByAdminController(req, res) {
 export async function updateEventController(req, res) {
     try {
         const { id_event } = req.params;
-        const updateDataEvent = req.body;
+        const updateDataEvent = await updateEventSchema.validate(req.body, { abortEarly: false })
         const id_admin = req.user.userId;
         const updateEvent = await updateEventService(id_event, updateDataEvent, id_admin);
         return res.status(200).json({
             updateEvent
         })
     } catch (error) {
+        if (error instanceof ValidationError) {
+            return res.status(400).json({
+                error: error.errors
+            })
+        }
+        if (error.message === "Data inválida." ||
+            error.message === "A data de início não pode ser anterior à data atual." ||
+            error.message === "A data de término não pode ser anterior à data de início.") {
+            return res.status(400).json({
+                error: error.message
+            })
+        }
         if (error.message === "Evento não encontrado") {
             return res.status(404).json({
                 error: error.message
@@ -146,18 +166,18 @@ export async function disableEventController(req, res) {
 }
 
 export async function deleteEventController(req, res) {
-    try{
+    try {
         const id_admin = req.user.userId;
-        const {id_event} = req.params;
+        const { id_event } = req.params;
         await deleteEventService(id_event, id_admin);
         return res.status(204).send();
-    }catch(error){
-        if(error.message === "Evento não encontrado"){
+    } catch (error) {
+        if (error.message === "Evento não encontrado") {
             return res.status(404).json({
                 error: error.message
             })
         }
-        if(error.message === "Você não tem permissão para deletar este evento."){
+        if (error.message === "Você não tem permissão para deletar este evento.") {
             return res.status(403).json({
                 error: error.message
             })

@@ -46,7 +46,6 @@ model Event {
   status           String     @db.VarChar(30)
   image_url        String     @db.VarChar(255)
   sponsor_pitch    String     @db.VarChar(1000)
-  responsible_course String   @db.VarChar(255)
   certificate_background_url String? @db.VarChar(255)
 
   id_admin         String

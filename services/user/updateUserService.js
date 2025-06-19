@@ -1,5 +1,6 @@
 import { findUserByEmailRepository, findUserByIdRepository, updateUserRepository } from "../../repository/userRepository.js";
 import { findAdminByEmailRepository } from "../../repository/userAdminRepository.js";
+import bcrypt from 'bcryptjs';
 
 export async function updateUserService(id, updatedData) {
     try {
@@ -7,16 +8,21 @@ export async function updateUserService(id, updatedData) {
         if (!existingUser) {
             throw new Error('Usuário não encontrado');
         }
+        if (updatedData) {
+            if (updatedData.password) {
+                const hashedPassword = await bcrypt.hash(updatedData.password, 10);
+                updatedData.password = hashedPassword;
+            }
 
-        if (updatedData.email && updatedData.email !== existingUser.email) {
-            const userWithEmail = await findUserByEmailRepository(updatedData.email);
-            const adminWithEmail = await findAdminByEmailRepository(updatedData.email);
+            if (updatedData.email && updatedData.email !== existingUser.email) {
+                const userWithEmail = await findUserByEmailRepository(updatedData.email);
+                const adminWithEmail = await findAdminByEmailRepository(updatedData.email);
 
-            if ((userWithEmail && userWithEmail.id !== id) || (adminWithEmail && adminWithEmail.id !== id)) {
-                throw new Error('E-mail já está em uso.');
+                if ((userWithEmail && userWithEmail.id !== id) || (adminWithEmail && adminWithEmail.id !== id)) {
+                    throw new Error('E-mail já está em uso.');
+                }
             }
         }
-
         const updateUser = await updateUserRepository(id, updatedData);
         return updateUser
 

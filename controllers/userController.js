@@ -1,5 +1,7 @@
-import { findUserService} from '../services/user/findUserByIdService.js';
+import { findUserService } from '../services/user/findUserByIdService.js';
 import { updateUserService } from '../services/user/updateUserService.js';
+import { updateUserSchema } from '../schemas/userSchema.js';
+import { ValidationError } from 'yup';
 
 export async function findUserController(req, res) {
     try {
@@ -26,12 +28,17 @@ export async function findUserController(req, res) {
 export async function updateUserController(req, res) {
     try {
         const id = req.user.userId;
-        const updatedData = req.body;
+        const updatedData = await updateUserSchema.validate(req.body, { abortEarly: false })
         const updateUser = await updateUserService(id, updatedData);
         res.status(200).json({
             updateUser
         })
     } catch (error) {
+        if (error instanceof ValidationError) {
+            return res.status(400).json({
+                error: error.errors
+            })
+        }
         if (error.message === "Usuário não encontrado") {
             return res.status(404).json({
                 error: error.message

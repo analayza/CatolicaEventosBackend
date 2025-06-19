@@ -1,5 +1,8 @@
 import { findUserAdminService } from "../services/userAdmin/findUserAdminByIdService.js";
 import { updateUserAdminService } from "../services/userAdmin/updateUserAdminService.js";
+import {updateUserAdminSchema} from '../schemas/adminSchema.js';
+import { ValidationError } from 'yup';
+
 
 export async function findUserAdminController(req, res) {
     try{
@@ -24,12 +27,17 @@ export async function findUserAdminController(req, res) {
 export async function updateUserAdminController(req, res) {
     try{
         const id_admin = req.user.userId;
-        const admin = req.body;
-        const updatedData = await updateUserAdminService(id_admin,admin);
+        const updateDataAdmin = await updateUserAdminSchema.validate(req.body, { abortEarly: false })
+        const updatedData = await updateUserAdminService(id_admin, updateDataAdmin);
         return res.status(200).json({
             updatedData
         })
     }catch(error){
+        if (error instanceof ValidationError) {
+            return res.status(400).json({
+                error: error.errors
+            })
+        }
         if(error.message ===  "Usuário não encontrado"){
             return res.status(404).json({
                 error: error.message
