@@ -8,6 +8,7 @@ import updateEventService from "../services/event/updateEventService.js";
 import { ValidationError } from "yup";
 import { createEventSchema } from '../schemas/eventSchema.js';
 import { updateEventSchema } from '../schemas/eventSchema.js';
+import { findSponsoresOfOneEventService } from "../services/sponsor/findSponsorOfEventService.js";
 
 export async function createEventController(req, res) {
     try {
@@ -179,6 +180,25 @@ export async function deleteEventController(req, res) {
         }
         if (error.message === "Você não tem permissão para deletar este evento.") {
             return res.status(403).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function findSponsoresOfOneEventController(req, res) {
+    try{
+        const {id_event} = req.params;
+        const findSponsors = await findSponsoresOfOneEventService(id_event);
+        return res.status(200).json({
+            findSponsors
+        })
+    }catch(error){
+        if(error.message === "O evento não existe"){
+            return res.status(404).json({
                 error: error.message
             })
         }

@@ -1,5 +1,5 @@
 import express from 'express';
-import {createEventController, deleteEventController, disableEventController, findEventByIdController, listAllEventsByAdminController, listAllEventsController, updateEventController} from "../controllers/eventController.js";
+import {createEventController, deleteEventController, disableEventController, findEventByIdController, findSponsoresOfOneEventController, listAllEventsByAdminController, listAllEventsController, updateEventController} from "../controllers/eventController.js";
 import authMiddleware from '../middlewares/authMiddleware.js';
 import validateAdminType from '../middlewares/validateAdminType.js';
 
@@ -11,5 +11,6 @@ route.get('/listAllByAdmin',authMiddleware, validateAdminType, listAllEventsByAd
 route.patch('/update/:id_event', authMiddleware, validateAdminType, updateEventController);
 route.patch('/disable/:id_event', authMiddleware, validateAdminType, disableEventController);
 route.delete('/delete/:id_event', authMiddleware, validateAdminType, deleteEventController);
+route.get('/sponsors/:id_event', findSponsoresOfOneEventController);
 
 export default route;

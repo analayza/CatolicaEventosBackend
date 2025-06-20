@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Sponsor" ALTER COLUMN "cnpj" SET DATA TYPE TEXT;

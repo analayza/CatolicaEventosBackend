@@ -52,6 +52,7 @@ model Event {
   admin            Admin      @relation(fields: [id_admin], references: [id_admin])
 
   activities       Activity[] @relation("EventActivities")
+  eventSponsors  EventSponsor[]
 }
 
 model Activity {
@@ -118,6 +119,20 @@ model Sponsor {
   phone          String
   description    String
   logo_url       String
-  cnpj           Int
+  cnpj           String
   created_at     DateTime @default(now())
+  eventSponsors  EventSponsor[]
 }
+
+model EventSponsor {
+  id          String   @id @default(uuid())
+  id_event    String
+  id_sponsor  String
+  status      String   @default("PENDING")
+
+  event       Event    @relation(fields: [id_event], references: [id_event])
+  sponsor     Sponsor  @relation(fields: [id_sponsor], references: [id])
+
+  @@unique([id_event, id_sponsor]) // evita duplicidade
+}
+
