@@ -5,6 +5,7 @@ import deleteActivityService from "../services/activity/deleteActivityService.js
 import disableActivityService from "../services/activity/disableActivityService.js";
 import findActivityByIdService from "../services/activity/findActivityByIdService.js";
 import updateActivityService from "../services/activity/updateActivityService.js";
+import findAllUsersEnrollmentActivityService from "../services/enrollment/findAllUsersEnrollmentActivityService.js";
 
 export async function createActivityController(req, res) {
     try {
@@ -163,6 +164,25 @@ export async function disableActivityController(req, res) {
         }
         return res.status(500).json({
             error: "Falha no servidor."
+        })
+    }
+}
+
+export async function findAllUsersEnrollmentActivityController(req, res) {
+    try{
+        const {id_activity} = req.params;
+        const allEnrollment = await findAllUsersEnrollmentActivityService(id_activity);
+        return res.status(200).json({
+            allEnrollment
+        })
+    }catch(error){
+        if(error.message === "A atividade não existe."){
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
         })
     }
 }

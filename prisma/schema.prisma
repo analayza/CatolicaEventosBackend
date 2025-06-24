@@ -84,6 +84,8 @@ model Enrollment {
   activity        Activity   @relation("ActivityEnrollments", fields: [id_activity], references: [id_activity])
   payments        Payment[]  @relation("EnrollmentPayments")
   certificates    Certificate[] @relation("EnrollmentCertificates")
+  
+  @@unique([id_user, id_activity])
 }
 
 model Payment {

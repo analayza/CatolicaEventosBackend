@@ -88,3 +88,17 @@ export async function disableActivityRepository(id_activity) {
         throw new Error("Erro disableActivityRepository " + error.message);
     }
 }
+
+export async function decreaseSlotsRepository(id_activity, currentSlots) {
+    try{
+        const activityNewSlots = await prisma.activity.update({
+            where:{id_activity},
+            data:{slots: currentSlots -1}
+        })
+        return activityNewSlots;
+    }catch(error){
+        console.error(error);
+        throw new Error("Erro decreaseSlotsRepository " + error.message);
+    }
+}
+
