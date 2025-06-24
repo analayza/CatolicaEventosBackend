@@ -18,7 +18,7 @@ export async function enrollmentRepository(id_user, id_activity) {
     }
 }
 
-export async function updateStatusEnrollmentRepository(id_enrollment) {
+export async function updateStatusEnrollment(id_enrollment) {
     try {
         const existingEnrollment = await prisma.enrollment.findUnique({
             where: { id_enrollment }
@@ -38,7 +38,7 @@ export async function updateStatusEnrollmentRepository(id_enrollment) {
 }
 
 
-export async function findUserEnrollment(id_user, id_activity) { 
+export async function findUserEnrollment(id_user, id_activity) {
     try {
         const existingEnrollment = await prisma.enrollment.findUnique({
             where: {
@@ -55,7 +55,7 @@ export async function findUserEnrollment(id_user, id_activity) {
     }
 }
 
-export async function findAllUsersEnrollmentActivityRepository(id_activity) { 
+export async function findAllUsersEnrollmentActivityRepository(id_activity) {
     try {
         const allEnrollment = await prisma.enrollment.findMany({
             where: { id_activity, status: "PAID" },
@@ -68,21 +68,25 @@ export async function findAllUsersEnrollmentActivityRepository(id_activity) {
     }
 }
 
-export async function findEventsParticipatedUserRepository(id_user) { 
+export async function findEventsParticipatedUserRepository(id_user) {
     try {
         const allEventsParticipated = await prisma.enrollment.findMany({
             where: { id_user, status: "PAID" },
             include: { activity: { include: { event: true } } }
         })
 
-        return allEventsParticipated.map(allEvents => allEvents.activity.event);
+        const events = allEventsParticipated.map(allEvents => allEvents.activity.event);
+        const uniqueEvents = events.filter((event, index, self) =>
+            index === self.findIndex(e => e.id_event === event.id_event)
+        );
+        return uniqueEvents;
     } catch (error) {
         console.error(error);
         throw new Error("Erro findEventsParticipatedUserRepository " + error.message);
     }
 }
 
-export async function findActivityParticipatedUserRepository(id_user) { 
+export async function findActivityParticipatedUserRepository(id_user) {
     try {
         const allActivityParticipated = await prisma.enrollment.findMany({
             where: { id_user, status: "PAID" },
@@ -90,7 +94,7 @@ export async function findActivityParticipatedUserRepository(id_user) {
                 activity: {
                     select: {
                         id_activity: true,
-                        id_event: true, 
+                        id_event: true,
                         name: true,
                         description: true,
                         speaker: true,
@@ -109,5 +113,41 @@ export async function findActivityParticipatedUserRepository(id_user) {
     } catch (error) {
         console.error(error);
         throw new Error("Erro findActivityParticipatedUserRepository " + error.message);
+    }
+}
+
+export async function cancelEnrollmentRepository(id_user, id_activity) {
+    try {
+        const cancelEnrollment = await prisma.enrollment.findUnique({
+            where: {
+                id_user_id_activity: {
+                    id_user,
+                    id_activity
+                }
+            }
+        })
+        return cancelEnrollment;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro cancelEnrollmentRepository " + error.message);
+    }
+}
+
+export async function updateEnrollmentStatusToCanceled(id_enrollment) {
+    try {
+        const existingEnrollment = await prisma.enrollment.findUnique({
+            where: { id_enrollment }
+        });
+        if (!existingEnrollment) {
+            throw new Error("Inscrição não encontrada.");
+        }
+        const updateStatusEnrollment = await prisma.enrollment.update({
+            where: { id_enrollment },
+            data: { status: "CANCELED" }
+        })
+        return updateStatusEnrollment;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro updateStatusEnrollmentRepository " + error.message);
     }
 }

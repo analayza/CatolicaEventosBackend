@@ -1,6 +1,7 @@
 import createEnrollmentService from "../services/enrollment/createEnrollmentService.js";
 import findEventsParticipatedUserService from "../services/enrollment/findEventsParticipatedUserService.js";
 import findActivityParticipatedUserService from "../services/enrollment/findActivityParticipateUserService.js";
+import cancelEnrollmentService from "../services/enrollment/cancelEnrollmentService.js";
 
 export async function createEnrollmentController(req, res) {
     try {
@@ -52,7 +53,7 @@ export async function findEventsParticipatedUserController(req, res) {
 export async function findActivityParticipatedUserController(req, res) {
     try {
         const id_user = req.user.userId;
-        const {id_event} = req.params;
+        const { id_event } = req.params;
         const allActivitysUser = await findActivityParticipatedUserService(id_user, id_event)
         return res.status(200).json({
             allActivitysUser
@@ -60,6 +61,33 @@ export async function findActivityParticipatedUserController(req, res) {
     } catch (error) {
         if (error.message === "O usuário não existe." || error.message === "O evento não existe.") {
             return res.status(404).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function cancelEnrollmentController(req, res) {
+    try {
+        const id_user = req.user.userId;
+        const { id_activity } = req.params;
+        const cancelEnrollment = await cancelEnrollmentService(id_user, id_activity);
+        return res.status(200).json({
+            cancelEnrollment
+        })
+    } catch (error) {
+        if (error.message === "O usuário não existe." || error.message === "A atividade não existe." ||
+            error.message === "Você não possui inscrição nessa atividade."
+        ) {
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        if (error.message === "Não é possivél cancelar sua inscrição nessa atividade.") {
+            return res.status(409).json({
                 error: error.message
             })
         }

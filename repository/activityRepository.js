@@ -30,13 +30,13 @@ export async function createActivityRepository(name, description, speaker, date,
 }
 
 export async function updateActivityRepository(id_activity, updateActivityData) {
-    try{
+    try {
         const updateActivity = await prisma.activity.update({
-            where: {id_activity},
+            where: { id_activity },
             data: updateActivityData
         })
         return updateActivity;
-    }catch(error){
+    } catch (error) {
         console.error(error);
         throw new Error("Erro updateActivityRepository " + error.message);
     }
@@ -90,15 +90,27 @@ export async function disableActivityRepository(id_activity) {
 }
 
 export async function decreaseSlotsRepository(id_activity, currentSlots) {
-    try{
+    try {
         const activityNewSlots = await prisma.activity.update({
-            where:{id_activity},
-            data:{slots: currentSlots -1}
+            where: { id_activity },
+            data: { slots: currentSlots - 1 }
         })
         return activityNewSlots;
-    }catch(error){
+    } catch (error) {
         console.error(error);
         throw new Error("Erro decreaseSlotsRepository " + error.message);
     }
 }
 
+export async function addSlotRepository(id_activity, currentSlots) {
+    try {
+        const activityNewSlots = await prisma.activity.update({
+            where: { id_activity },
+            data: { slots: currentSlots + 1 }
+        })
+        return activityNewSlots;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro addSlotRepository " + error.message);
+    }
+}

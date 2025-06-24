@@ -1,4 +1,4 @@
-import { enrollmentRepository, findUserEnrollment, updateStatusEnrollmentRepository } from "../../repository/enrollmentRepository.js";
+import { enrollmentRepository, findUserEnrollment, updateStatusEnrollment } from "../../repository/enrollmentRepository.js";
 import { findUserByIdRepository } from "../../repository/userRepository.js";
 import { decreaseSlotsRepository, findActivityByIdRepository } from "../../repository/activityRepository.js";
 
@@ -22,7 +22,7 @@ export default async function createEnrollmentService(id_user, id_activity) {
 
         if (existingActivity.price == 0) {
             const enrollmentFree = await enrollmentRepository(id_user, id_activity);
-            const updatedEnrollmentFree = await updateStatusEnrollmentRepository(enrollmentFree.id_enrollment);
+            const updatedEnrollmentFree = await updateStatusEnrollment(enrollmentFree.id_enrollment);
             await decreaseSlotsRepository(id_activity, existingActivity.slots);
             return updatedEnrollmentFree;
         }
