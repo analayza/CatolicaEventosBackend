@@ -15,17 +15,25 @@ export default async function updateActivityService(id_activity, updateActivityD
             throw new Error("Você não tem permissão para atualizar essa atividade.");
         }
 
+        function onlyDate(date) {
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        }
+
         const { date, slots, workload } = updateActivityData;
 
         if (date) {
-            const dateActivity = new Date(date);
+            const dateActivity = onlyDate(new Date(date));
+            const startDate = onlyDate(exitingEvent.start_date);
+            const endDate = onlyDate(exitingEvent.end_date);
+            const today = onlyDate(new Date());
+
             if (isNaN(dateActivity.getTime())) {
                 throw new Error("Data inválida.");
             }
-            if (dateActivity < new Date()) {
+            if (dateActivity < today) {
                 throw new Error("Data inválida! A data da atividade deve ser no futuro.");
             }
-            if (dateActivity < exitingEvent.start_date || dateActivity > exitingEvent.end_date) {
+            if (dateActivity < startDate || dateActivity > endDate) {
                 throw new Error("Data inválida, está fora do periodo do evento.");
             }
             updateActivityData.date = dateActivity;

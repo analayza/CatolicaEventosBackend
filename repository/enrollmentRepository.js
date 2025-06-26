@@ -18,7 +18,7 @@ export async function enrollmentRepository(id_user, id_activity) {
     }
 }
 
-export async function updateStatusEnrollment(id_enrollment) {
+export async function updateStatusEnrollmentToPaid(id_enrollment) {
     try {
         const existingEnrollment = await prisma.enrollment.findUnique({
             where: { id_enrollment }
@@ -33,7 +33,7 @@ export async function updateStatusEnrollment(id_enrollment) {
         return updateStatusEnrollment;
     } catch (error) {
         console.error(error);
-        throw new Error("Erro updateStatusEnrollmentRepository " + error.message);
+        throw new Error("Erro updateStatusEnrollmentToPaid " + error.message);
     }
 }
 
@@ -64,7 +64,7 @@ export async function findAllUsersEnrollmentActivityRepository(id_activity) {
         return allEnrollment.map(allE => allE.user);
     } catch (error) {
         console.error(error);
-        throw new Error("Erro findAllUsersEnrollmentActivity " + error.message);
+        throw new Error("Erro findAllUsersEnrollmentActivityRepository " + error.message);
     }
 }
 

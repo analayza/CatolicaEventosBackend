@@ -15,24 +15,32 @@ export default async function createActivityService(activityData, id_admin, id_e
             price,
         } = activityData;
 
-        const existingevent = await findEventByIdRepository(id_event);
+        const existingEvent = await findEventByIdRepository(id_event);
 
-        if (!existingevent) {
+        if (!existingEvent) {
             throw new Error("O evento não existe");
         }
 
-        if(existingevent.id_admin !== id_admin){
+        if (existingEvent.id_admin !== id_admin) {
             throw new Error("Você não tem permissão para criar essa atividade");
         }
 
-        const dateActivity = new Date(date);
+        function onlyDate(date) {
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        }
+
+        const dateActivity = onlyDate(new Date(date));
+        const startDate = onlyDate(existingEvent.start_date);
+        const endDate = onlyDate(existingEvent.end_date);
+        const today = onlyDate(new Date());
+
         if (isNaN(dateActivity.getTime())) {
             throw new Error("Data inválida.");
         }
-        if (dateActivity < new Date()) {
+        if (dateActivity < today) {
             throw new Error("Data inválida! A data da atividade deve ser no futuro.");
         }
-        if (dateActivity < existingevent.start_date || dateActivity > existingevent.end_date) {
+        if (dateActivity < startDate || dateActivity > endDate) {
             throw new Error("Data inválida, está fora do periodo do evento.");
         }
 

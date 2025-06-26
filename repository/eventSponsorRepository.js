@@ -37,4 +37,23 @@ export async function findSponsoresOfOneEventRepository(id_event) {
     }
 }
 
-//Falta a Funcionalidade para modificar o status do pagamento
+export async function updateStatusSponsorshipToPaid(id) {
+    try {
+        const existingSponsorship = await prisma.eventSponsor.findUnique({
+            where: { id }
+        });
+        if (!existingSponsorship) {
+            throw new Error("Patrocinio não encontrado.");
+        }
+        const updateStatus = await prisma.eventSponsor.update({
+            where: { id },
+            data: { status: "PAID" }
+        })
+        return updateStatus;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro updateStatusSponsorshipToPaid " + error.message);
+    }
+}
+
+//Falta a Funcionalidade do pagamento
