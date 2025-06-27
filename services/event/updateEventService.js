@@ -14,6 +14,14 @@ export default async function updateEventService(id_event, updateDataEvent, id_a
         if (existingEvent.id_admin !== id_admin) {
             throw new Error("Você não tem permissão para editar este evento.");
         }
+        if (updateDataEvent.minimum_sponsorship_value !== undefined) {
+            const minValue = parseFloat(updateDataEvent.minimum_sponsorship_value);
+            if (isNaN(minValue) || minValue < 0) {
+                throw new Error("O valor mínimo do patrocínio deve ser um número maior ou igual a zero.");
+            }
+            updateDataEvent.minimum_sponsorship_value = minValue;
+        }
+
 
         if (updateDataEvent.start_date || updateDataEvent.end_date) {
             const data_start_date = new Date(updateDataEvent.start_date || existingEvent.start_date);
@@ -49,7 +57,8 @@ export default async function updateEventService(id_event, updateDataEvent, id_a
             error.message === "Você não tem permissão para editar este evento." ||
             error.message === "Data inválida." ||
             error.message === "A data de início não pode ser anterior à data atual." ||
-            error.message === "A data de término não pode ser anterior à data de início."
+            error.message === "A data de término não pode ser anterior à data de início." ||
+            error.message === "O valor mínimo do patrocínio deve ser um número maior ou igual a zero."
         ) {
             throw error;
         }

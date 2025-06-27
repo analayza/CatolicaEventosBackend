@@ -11,7 +11,8 @@ export default async function createEventService(eventData, id_admin) {
             location,
             image_url,
             certificate_background_url,
-            sponsor_pitch
+            sponsor_pitch,
+            minimum_sponsorship_value,
         } = eventData;
 
         const admin = await findUserAdminByIdRepository(id_admin);
@@ -37,10 +38,14 @@ export default async function createEventService(eventData, id_admin) {
         if (start < today || end < start) {
             throw new Error("As datas são inválidas.");
         }
+        const minValue = parseFloat(minimum_sponsorship_value);
+        if (isNaN(minValue) || minValue < 0) {
+            throw new Error("O valor mínimo do patrocínio deve ser um número maior ou igual a zero.");
+        }
 
         const status = "active";
         const newEvent = await createEventRepository(name, description, data_start_date, data_end_date, location,
-            status, image_url, certificate_background_url, sponsor_pitch, id_admin)
+            status, image_url, certificate_background_url, sponsor_pitch, minValue, id_admin)
         return newEvent;
 
     } catch (error) {
@@ -48,7 +53,8 @@ export default async function createEventService(eventData, id_admin) {
             error.message === 'O usuário não existe.' ||
             error.message === 'Todos os campos são obrigatórios.' ||
             error.message === 'As datas são inválidas.' ||
-            error.message === 'Data inválida.'
+            error.message === 'Data inválida.' ||
+            error.message === "O valor mínimo do patrocínio deve ser um número maior ou igual a zero."
         ) {
             throw error;
         }

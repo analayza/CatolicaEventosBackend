@@ -13,9 +13,16 @@ const createSponsorSchema = yup.object().shape({
         .min(3, 'O site ou rede social deve ter no mínimo 3 caracteres')
         .required('Campo Obrigatório'),
 
-    amount: yup
+    sponsorship_value: yup
         .number()
-        .moreThan(0, 'O valor deve ser maior que zero')
+        .typeError('O valor deve ser um número')
+        .test(
+            'min-sponsorship-value',
+            function (value) {
+                const minValue = this.options.context?.minimumSponsorshipValue;
+                return value > minValue || this.createError({ message: `O valor do patrocínio deve ser maior que o mínimo do evento (${minValue})` });
+            }
+        )
         .required('O valor é obrigatório'),
 
     email: yup

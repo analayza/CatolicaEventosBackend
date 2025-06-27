@@ -36,6 +36,14 @@ const createEventSchema = yup.object().shape({
         .string()
         .max(500, 'A descrição deve ter no máximo 500 caracteres')
         .required('Campo obrigatório'),
+    minimum_sponsorship_value: yup
+        .number()
+        .transform((value, originalValue) => {
+            return originalValue === '' ? NaN : Number(originalValue);
+        })
+        .min(0, "O valor do patrocinio deve ser maior que zero")
+        .typeError("O valor mínimo do patrocínio deve ser um número")
+        .required("O valor mínimo de patrocínio é obrigatório"),
 })
 
 
@@ -66,7 +74,14 @@ const updateEventSchema = yup.object().shape({
         .url('URL do certificado inválida'),
     sponsor_pitch: yup
         .string()
-        .max(500, 'A descrição deve ter no máximo 500 caracteres')
+        .max(500, 'A descrição deve ter no máximo 500 caracteres'),
+    minimum_sponsorship_value: yup
+        .number()
+        .transform((value, originalValue) => {
+            return originalValue === '' ? NaN : Number(originalValue);
+        })
+        .min(0, "O valor do patrocinio deve ser maior que zero")
+        .typeError("O valor mínimo do patrocínio deve ser um número")
 })
 
-export {updateEventSchema, createEventSchema};
+export { updateEventSchema, createEventSchema };

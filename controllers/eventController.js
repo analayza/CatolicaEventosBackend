@@ -31,7 +31,9 @@ export async function createEventController(req, res) {
         }
         if (error.message === 'Todos os campos são obrigatórios.' ||
             error.message === 'As datas são inválidas.' ||
-            error.message === 'Data inválida.') {
+            error.message === 'Data inválida.' ||
+            error.message === "O valor mínimo do patrocínio deve ser um número maior ou igual a zero."
+        ) {
             return res.status(400).json({
                 error: error.message
             })
@@ -120,7 +122,9 @@ export async function updateEventController(req, res) {
         }
         if (error.message === "Data inválida." ||
             error.message === "A data de início não pode ser anterior à data atual." ||
-            error.message === "A data de término não pode ser anterior à data de início.") {
+            error.message === "A data de término não pode ser anterior à data de início." ||
+            error.message === "O valor mínimo do patrocínio deve ser um número maior ou igual a zero."
+        ) {
             return res.status(400).json({
                 error: error.message
             })
@@ -190,14 +194,14 @@ export async function deleteEventController(req, res) {
 }
 
 export async function findSponsoresOfOneEventController(req, res) {
-    try{
-        const {id_event} = req.params;
+    try {
+        const { id_event } = req.params;
         const findSponsors = await findSponsoresOfOneEventService(id_event);
         return res.status(200).json({
             findSponsors
         })
-    }catch(error){
-        if(error.message === "O evento não existe"){
+    } catch (error) {
+        if (error.message === "O evento não existe") {
             return res.status(404).json({
                 error: error.message
             })

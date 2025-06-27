@@ -1,4 +1,4 @@
-import { createAndAddSponsorInEventRepository } from "../../repository/SponsorRepository.js";
+import { createAndAddSponsorInEventRepository } from "../../repository/sponsorRepository.js";
 
 export default async function createSponsorService(sponsorData, id_event) {
     try{

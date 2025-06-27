@@ -47,6 +47,8 @@ model Event {
   image_url        String     @db.VarChar(255)
   sponsor_pitch    String     @db.VarChar(1000)
   certificate_background_url String? @db.VarChar(255)
+  minimum_sponsorship_value Float
+
 
   id_admin         String
   admin            Admin      @relation(fields: [id_admin], references: [id_admin])
@@ -116,7 +118,6 @@ model Sponsor {
   id             String   @id @default(uuid())
   name           String
   website        String
-  amount         Decimal  @db.Decimal(10,2)
   email          String
   phone          String
   description    String
@@ -131,6 +132,7 @@ model EventSponsor {
   id_event    String
   id_sponsor  String
   status      String   @default("PENDING")
+  sponsorship_value Float
 
   event       Event    @relation(fields: [id_event], references: [id_event])
   sponsor     Sponsor  @relation(fields: [id_sponsor], references: [id])

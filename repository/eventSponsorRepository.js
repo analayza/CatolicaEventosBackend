@@ -2,13 +2,14 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function addSponsorInEventRepository(id_event, id_sponsor, status) {
+export async function addSponsorInEventRepository(id_event, id_sponsor, status, sponsorship_value) {
     try{
         const eventSponsor = await prisma.eventSponsor.create({
             data: {
                 id_event,
                 id_sponsor,
-                status
+                status,
+                sponsorship_value
             }
         })
         return eventSponsor;
