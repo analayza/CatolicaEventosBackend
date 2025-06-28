@@ -1,6 +1,7 @@
 import { enrollmentRepository, findUserEnrollment, updateStatusEnrollmentToPaid } from "../../repository/enrollmentRepository.js";
 import { findUserByIdRepository } from "../../repository/userRepository.js";
 import { decreaseSlotsRepository, findActivityByIdRepository } from "../../repository/activityRepository.js";
+import { sendConfirmationEnrollment } from "./sendEnrollmentsConfirmationEmail.js";
 
 export default async function createEnrollmentService(id_user, id_activity) {
     try {
@@ -24,12 +25,15 @@ export default async function createEnrollmentService(id_user, id_activity) {
             const enrollmentFree = await enrollmentRepository(id_user, id_activity);
             const updatedEnrollmentFree = await updateStatusEnrollmentToPaid(enrollmentFree.id_enrollment);
             await decreaseSlotsRepository(id_activity, existingActivity.slots);
+            await sendConfirmationEnrollment(existingUser.email, enrollmentFree.id_enrollment);
             return updatedEnrollmentFree;
         }
         if (existingActivity.price > 0) {
             const enrollment = await enrollmentRepository(id_user, id_activity);
             //Funcionalidade de Pagamento (Mercado Pago)
+            //Atualizar o status 
             //Funcionalidade de decreaseSlots
+            //Funcionalidade de sendConfirmationEnrollment
             return enrollment;
         }
     } catch (error) {

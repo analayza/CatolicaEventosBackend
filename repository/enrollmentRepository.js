@@ -151,3 +151,15 @@ export async function updateEnrollmentStatusToCanceled(id_enrollment) {
         throw new Error("Erro updateStatusEnrollmentRepository " + error.message);
     }
 }
+
+export async function findEnrollmentRepository(id_enrollment) {
+    try {
+        const enrollment = await prisma.enrollment.findUnique({
+            where: {id_enrollment}
+        })
+        return enrollment;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro  findEnrollment " + error.message);
+    }
+}
