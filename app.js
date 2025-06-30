@@ -8,6 +8,7 @@ import eventRoute from '../backend/routes/eventRoute.js';
 import activityRoute from '../backend/routes/activityRoute.js';
 import sponsorRoute from '../backend/routes/sponsorRoute.js';
 import enrollmentRoute from '../backend/routes/enrollmentRoute.js';
+import certificateRoute from '../backend/routes/certificateRoute.js';
 
 const app = express();
 app.use(express.json());
@@ -21,5 +22,6 @@ app.use('/event', eventRoute);
 app.use('/activity', activityRoute);
 app.use('/sponsor', sponsorRoute);
 app.use('/enrollment', enrollmentRoute);
+app.use('/certificate', certificateRoute);
 
 export default app;
