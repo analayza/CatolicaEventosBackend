@@ -33,3 +33,36 @@ export async function findCertificateRepository(id_enrollment) {
         throw new Error("Erro findCertificateRepository " + error.message);
     }
 }
+
+export async function findAllCertificatesOfUserRepository(id_user) {
+    try {
+        const certificates = await prisma.certificate.findMany({
+            where: {
+                enrollment: {
+                    id_user: id_user,
+                }
+            },
+            select: {
+                pdf_link: true,
+                activity_name: true, 
+                enrollment: {
+                    select: {
+                        activity: {
+                            select: {
+                                event: {
+                                    select: {
+                                        name: true 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        return certificates;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro findAllCertificatesOfUserRepository " + error.message);
+    }
+}

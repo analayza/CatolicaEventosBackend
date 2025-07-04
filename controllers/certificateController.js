@@ -1,5 +1,6 @@
 import previewCertificateService from "../services/certificate/previewCertificateService.js";
 import generateCertificateService from "../services/certificate/generateCertificateService.js";
+import findAllCertificatesOfUserService from "../services/certificate/findAllCertificatesOfUserService.js";
 
 export async function previewCertificateController(req, res) {
     try {
@@ -49,5 +50,24 @@ export async function generateCertificateController(req, res) {
             return res.status(400).json({ error: error.message });
         }
         return res.status(500).json({ error: "Erro interno no servidor." });
+    }
+}
+
+export async function findAllCertificatesOfUserController(req, res) {
+    try{
+        const id_user = req.user.userId;
+        const allCertificates = await findAllCertificatesOfUserService(id_user);
+        return res.status(200).json({
+            allCertificates
+        });
+    }catch(error){
+        if (error.message === "O usuário não existe") {
+            return res.status(404).json({ error: error.message });
+        }
+        if(error.message === "Você ainda não tem certificados."){
+            return res.status(204).send();
+        }
+
+        return res.status(500).json({error: "Erro interno no servidor."});
     }
 }
