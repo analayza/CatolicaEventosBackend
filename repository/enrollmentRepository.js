@@ -163,3 +163,33 @@ export async function findEnrollmentRepository(id_enrollment) {
         throw new Error("Erro  findEnrollment " + error.message);
     }
 }
+
+export async function findEnrollmentToCertificateRepository(id_enrollment) {
+    try {
+        const enrollment = await prisma.enrollment.findUnique({
+            where: { id_enrollment },
+            include: {
+                user: {
+                    select: {
+                        name: true
+                    }
+                },
+                activity: {
+                    select: {
+                        name: true,
+                        workload: true,
+                        event: {
+                            select: {
+                                certificate_background_url: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        return enrollment;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro findEnrollmentToCertificateRepository " + error.message);
+    }
+}
