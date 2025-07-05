@@ -66,3 +66,28 @@ export async function findAllCertificatesOfUserRepository(id_user) {
         throw new Error("Erro findAllCertificatesOfUserRepository " + error.message);
     }
 }
+
+export async function updateCertificateRepository(id_certificate, pdf_link) {
+    try{
+        const updateCertificate = await prisma.certificate.update({
+            where: {id_certificate},
+            data:{pdf_link}
+        })
+        return updateCertificate;
+    }catch (error) {
+        console.error(error);
+        throw new Error("Erro updateCertificate " + error.message);
+    }
+}
+
+export async function certificateValidationRepository(id_certificate) {
+    try{
+        const validationCertificate = await prisma.certificate.findUnique({
+            where: {id_certificate}
+        })
+        return validationCertificate;
+    }catch (error) {
+        console.error(error);
+        throw new Error("Erro certificateValidationRepository " + error.message);
+    }
+}

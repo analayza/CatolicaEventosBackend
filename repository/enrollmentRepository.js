@@ -155,7 +155,7 @@ export async function updateEnrollmentStatusToCanceled(id_enrollment) {
 export async function findEnrollmentRepository(id_enrollment) {
     try {
         const enrollment = await prisma.enrollment.findUnique({
-            where: {id_enrollment}
+            where: { id_enrollment }
         })
         return enrollment;
     } catch (error) {
@@ -180,6 +180,7 @@ export async function findEnrollmentToCertificateRepository(id_enrollment) {
                         workload: true,
                         event: {
                             select: {
+                                id_admin: true,
                                 certificate_background_url: true
                             }
                         }

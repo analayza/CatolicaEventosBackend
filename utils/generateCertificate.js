@@ -1,7 +1,19 @@
 import puppeteer from 'puppeteer';
 
-export async function generateCertificate(nameUser, nameActivity, workload, backgroundUrl) {
-    const htmlContent = `
+export async function generateCertificate(nameUser, nameActivity, workload, backgroundUrl, id_certificate, issued_date) {
+  function formatDateBR(date) {
+    const meses = [
+      'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+      'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+    ];
+    const dia = date.getDate().toString().padStart(2, '0');
+    const mes = meses[date.getMonth()];
+    const ano = date.getFullYear();
+
+    return `${dia} ${mes} de ${ano}`;
+  }
+const issuedDateFormatted = formatDateBR(new Date(issued_date));
+  const htmlContent = `
     <html>
       <head>
         <style>
@@ -13,13 +25,13 @@ export async function generateCertificate(nameUser, nameActivity, workload, back
             background-image: url('${backgroundUrl}');
             background-size: cover;
             background-position: center;
-            font-family: Arial, sans-serif;
+            font-family: Georgia, serif;
             text-align: center;
             position: relative;
           }
           .text-content {
             position: absolute;
-            top: 40%;
+            top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 70%;
@@ -27,26 +39,39 @@ export async function generateCertificate(nameUser, nameActivity, workload, back
             color: #000;
             font-weight: bold;
           }
+          .code {
+            position: absolute;
+            top: 95%;
+            left: 5%;
+            font-size: 10px;
+            color: #000;
+            transform: translateY(-50%);
+            writing-mode: horizontal-tb;
+          }
         </style>
       </head>
       <body>
+        <div class="code">
+          Código de validação: ${id_certificate}
+        </div>
+
         <div class="text-content" style="line-height: 1.6;">
-            Certificamos que <strong>${nameUser}</strong><br/>
-            participou da atividade <strong>${nameActivity}</strong>,<br/>
-            realizada no âmbito do evento, com carga horária de <strong>${workload}</strong> horas.<br/><br/>
-            Esta certificação é concedida como reconhecimento da participação e empenho demonstrados.
+            Certificamos que <strong>${nameUser}</strong>
+            participou da atividade ${nameActivity},
+            realizada no âmbito do evento, com carga horária de ${workload} horas.<br/><br/>
+            Esta certificação é concedida como reconhecimento da participação e empenho demonstrados. Emitido em: <strong>${issuedDateFormatted}</strong>
         </div>
       </body>
     </html>
   `;
 
-    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'],});
-    const page = await browser.newPage();
+  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'], });
+  const page = await browser.newPage();
 
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+  await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: 0, landscape: true });
+  const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: 0, landscape: true });
 
-    await browser.close();
-    return pdfBuffer;
+  await browser.close();
+  return pdfBuffer;
 }

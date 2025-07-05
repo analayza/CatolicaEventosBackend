@@ -1,9 +1,9 @@
-import { createCertificateRepository, findCertificateRepository } from "../../repository/certificateRepository.js";
+import { createCertificateRepository, findCertificateRepository, updateCertificateRepository } from "../../repository/certificateRepository.js";
 import { findEnrollmentToCertificateRepository } from "../../repository/enrollmentRepository.js";
 import { generateCertificate } from "../../utils/generateCertificate.js";
 import supabase from "../../utils/supabase.js";
 
-export default async function generateCertificateService(enrollments) {
+export default async function generateCertificateService(enrollments, id_admin) {
 
     if (!Array.isArray(enrollments)) {
         enrollments = [enrollments];
@@ -20,7 +20,9 @@ export default async function generateCertificateService(enrollments) {
             if (!enrollment) {
                 throw new Error("Essa inscrição não existe.");
             }
-
+            if(enrollment.activity.event.id_admin !== id_admin){
+                throw new Error("Admin não autorizado para gerar certificados deste evento.");
+            }
             if (enrollment.status !== 'PAID') {
                 throw new Error("Inscrição não confirmada.");
             }
@@ -36,8 +38,12 @@ export default async function generateCertificateService(enrollments) {
                 continue;
             }
 
+            const partialCertificate = await createCertificateRepository(id_enrollment, enrollment.user.name,
+                enrollment.activity.name, enrollment.activity.workload, "");
+
             const pdfBuffer = await generateCertificate(enrollment.user.name,
-                enrollment.activity.name, enrollment.activity.workload, enrollment.activity.event.certificate_background_url);
+                enrollment.activity.name, enrollment.activity.workload, enrollment.activity.event.certificate_background_url,
+                partialCertificate.id_certificate, partialCertificate.issued_date);
 
             const bufferToUpload = Buffer.from(
                 pdfBuffer instanceof Uint8Array ? pdfBuffer : new Uint8Array(pdfBuffer)
@@ -57,9 +63,9 @@ export default async function generateCertificateService(enrollments) {
             const { data: publicUrlData } = supabase.storage
                 .from('certificates')
                 .getPublicUrl(fileName);
-
-            const certificate = await createCertificateRepository(id_enrollment, enrollment.user.name,
-                enrollment.activity.name, enrollment.activity.workload, publicUrlData.publicUrl);
+            
+            
+            const certificate = await updateCertificateRepository(partialCertificate.id_certificate, publicUrlData.publicUrl);
 
             generated++
             results.push({ id_enrollment, status: "GENERATED", certificate });
@@ -70,6 +76,7 @@ export default async function generateCertificateService(enrollments) {
                 || error.message === "Inscrição não confirmada."
                 || error.message === "Esse evento ainda não tem certificado configurado."
                 || error.message === 'Erro ao enviar certificado para o storage.'
+                || error.message === "Admin não autorizado para gerar certificados deste evento."
             ) {
                 throw error;
             }
