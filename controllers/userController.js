@@ -54,3 +54,4 @@ export async function updateUserController(req, res) {
         });
     }
 }
+

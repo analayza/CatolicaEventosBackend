@@ -30,3 +30,16 @@ export async function updateUserRepository(id, updatedData) {
         throw new Error("Erro ao atualizar usuário");
     }
 }
+
+export async function resetPasswordUserRepository(email, hashedPassword) {
+    try{
+        const updatePassword = await prisma.user.update({
+            where: {email},
+            data:{password: hashedPassword}
+        })
+        return updatePassword;
+    }catch(error){
+        console.error("Erro resetPasswordUserRepository", error);
+        throw error;
+    }
+}

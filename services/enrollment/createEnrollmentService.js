@@ -1,7 +1,7 @@
 import { enrollmentRepository, findUserEnrollment, updateStatusEnrollmentToPaid } from "../../repository/enrollmentRepository.js";
 import { findUserByIdRepository } from "../../repository/userRepository.js";
 import { decreaseSlotsRepository, findActivityByIdRepository } from "../../repository/activityRepository.js";
-import { sendConfirmationEnrollment } from "./sendEnrollmentsConfirmationEmail.js";
+import { sendConfirmationEnrollment } from "../../utils/sendEnrollmentsConfirmationEmail.js";
 
 export default async function createEnrollmentService(id_user, id_activity) {
     try {
