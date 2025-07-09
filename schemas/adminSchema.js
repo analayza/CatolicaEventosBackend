@@ -13,7 +13,7 @@ const createUserAdminSchema = yup.object().shape({
 const updateUserAdminSchema = yup.object().shape({
     name: yup.string().trim().min(3, 'O nome deve ter no mínimo 3 caracteres').notRequired(),
     email: yup.string().trim().email('E-mail inválido').notRequired(),
-    photo_url: yup.string().url('URL da foto inválida').notRequired(),
+    profile_picture: yup.string().matches(/^data:image\/(png|jpeg|jpg);base64,/, 'Formato da imagem de perfil inválida').notRequired(),
     password: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres').notRequired(),
 });
 

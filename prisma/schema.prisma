@@ -18,7 +18,7 @@ model User {
   name            String       @db.VarChar(100)
   email           String       @unique @db.VarChar(150)
   password        String       @db.VarChar(255)
-  profile_picture String?      @db.VarChar(255) // Foto de perfil opcional
+  profile_picture String?      @db.Text
   created_at      DateTime     @default(now())
 
   enrollments     Enrollment[] @relation("UserEnrollments")
@@ -30,7 +30,7 @@ model Admin {
   email           String   @unique @db.VarChar(150)
   password        String   @db.VarChar(255)
   course          String   @db.VarChar(150)
-  profile_picture String?  @db.VarChar(255) // Foto de perfil opcional
+  profile_picture String?  @db.Text
   created_at      DateTime @default(now())
 
   events          Event[]
@@ -44,9 +44,9 @@ model Event {
   end_date         DateTime
   location         String     @db.VarChar(200)
   status           String     @db.VarChar(30)
-  image_url        String     @db.VarChar(255)
+  image_url        String     @db.Text
   sponsor_pitch    String     @db.VarChar(1000)
-  certificate_background_url String? @db.VarChar(255)
+  certificate_background_url String @db.Text
   minimum_sponsorship_value Float
 
 

@@ -10,6 +10,8 @@ import sponsorRoute from '../backend/routes/sponsorRoute.js';
 import enrollmentRoute from '../backend/routes/enrollmentRoute.js';
 import certificateRoute from '../backend/routes/certificateRoute.js';
 import recoveryRoute from '../backend/routes/recoveryRoute.js';
+import { errorHandler } from './middlewares/errorHandlerMulter.js';
+
 const app = express();
 app.use(express.json());
 
@@ -25,4 +27,5 @@ app.use('/sponsor', sponsorRoute);
 app.use('/enrollment', enrollmentRoute);
 app.use('/certificate', certificateRoute);
 
+app.use(errorHandler);
 export default app;

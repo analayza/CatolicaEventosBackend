@@ -26,11 +26,11 @@ const createEventSchema = yup.object().shape({
         .required('Campo obrigatório'),
     image_url: yup
         .string()
-        .url('URL da imagem inválida')
+        .matches(/^data:image\/(png|jpeg|jpg);base64,/, 'Formato da imagem do evento inválido')
         .required('Campo obrigatório'),
     certificate_background_url: yup
         .string()
-        .url('URL do certificado inválida')
+        .matches(/^data:image\/(png|jpeg|jpg);base64,/, 'Formato do certificado inválido')
         .required('Campo obrigatório'),
     sponsor_pitch: yup
         .string()
@@ -68,10 +68,10 @@ const updateEventSchema = yup.object().shape({
         .min(3, 'O local deve ter no mínimo 3 caracteres'),
     image_url: yup
         .string()
-        .url('URL da imagem inválida'),
+        .matches(/^data:image\/(png|jpeg|jpg);base64,/, 'Formato da imagem do evento inválido'),
     certificate_background_url: yup
         .string()
-        .url('URL do certificado inválida'),
+        .matches(/^data:image\/(png|jpeg|jpg);base64,/, 'Formato do certificado inválido'),
     sponsor_pitch: yup
         .string()
         .max(500, 'A descrição deve ter no máximo 500 caracteres'),

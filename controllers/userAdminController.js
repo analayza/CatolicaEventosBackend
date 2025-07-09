@@ -27,7 +27,19 @@ export async function findUserAdminController(req, res) {
 export async function updateUserAdminController(req, res) {
     try{
         const id_admin = req.user.userId;
-        const updateDataAdmin = await updateUserAdminSchema.validate(req.body, { abortEarly: false })
+
+        let profile_picture = null;
+        if(req.file){
+            const file = req.file;
+            const base64 = file.buffer.toString("base64");
+            profile_picture = `data:${file.mimetype};base64,${base64}`;
+        }
+        const bodyData = {
+            ...req.body,
+            profile_picture
+        }
+
+        const updateDataAdmin = await updateUserAdminSchema.validate(bodyData, { abortEarly: false })
         const updatedData = await updateUserAdminService(id_admin, updateDataAdmin);
         return res.status(200).json({
             updatedData

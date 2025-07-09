@@ -13,11 +13,34 @@ import { findSponsoresOfOneEventService } from "../services/sponsor/findSponsorO
 export async function createEventController(req, res) {
     try {
         const id_admin = req.user.userId;
-        const eventData = await createEventSchema.validate(req.body, { abortEarly: false })
+
+        let image_url = null;
+        let certificate_background_url = null;
+
+        if (req.files?.image) {
+            const file = req.files.image[0];
+            const base64 = file.buffer.toString("base64");
+            image_url = `data:${file.mimetype};base64,${base64}`;
+        }
+
+        if (req.files?.certificate_background) {
+            const file = req.files.certificate_background[0];
+            const base64 = file.buffer.toString("base64");
+            certificate_background_url = `data:${file.mimetype};base64,${base64}`;
+        }
+
+        const bodyData = {
+            ...req.body,
+            image_url,
+            certificate_background_url
+        }
+
+        const eventData = await createEventSchema.validate(bodyData, { abortEarly: false })
         const createdEvent = await createEventService(eventData, id_admin);
         return res.status(201).json({
             createdEvent
         })
+
     } catch (error) {
         if (error instanceof ValidationError) {
             return res.status(400).json({
@@ -108,7 +131,29 @@ export async function listAllEventsByAdminController(req, res) {
 export async function updateEventController(req, res) {
     try {
         const { id_event } = req.params;
-        const updateDataEvent = await updateEventSchema.validate(req.body, { abortEarly: false })
+
+        let image_url = null;
+        let certificate_background_url = null;
+
+        if (req.files?.image) {
+            const file = req.files.image[0];
+            const base64 = file.buffer.toString("base64");
+            image_url = `data:${file.mimetype};base64,${base64}`;
+        }
+
+        if (req.files?.certificate_background) {
+            const file = req.files.certificate_background[0];
+            const base64 = file.buffer.toString("base64");
+            certificate_background_url = `data:${file.mimetype};base64,${base64}`;
+        }
+
+        const bodyData = {
+            ...req.body,
+            ...(image_url && {image_url}),
+            ...(certificate_background_url && {certificate_background_url})
+        };
+
+        const updateDataEvent = await updateEventSchema.validate(bodyData, { abortEarly: false })
         const id_admin = req.user.userId;
         const updateEvent = await updateEventService(id_event, updateDataEvent, id_admin);
         return res.status(200).json({

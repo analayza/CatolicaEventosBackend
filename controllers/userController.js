@@ -28,7 +28,19 @@ export async function findUserController(req, res) {
 export async function updateUserController(req, res) {
     try {
         const id = req.user.userId;
-        const updatedData = await updateUserSchema.validate(req.body, { abortEarly: false })
+
+        let profile_picture = null;
+        if(req.file){
+            const file = req.file;
+            const base64 = file.buffer.toString("base64");
+            profile_picture = `data:${file.mimetype};base64,${base64}`;
+        }
+        const bodyData = {
+            ...req.body,
+            profile_picture
+        }
+
+        const updatedData = await updateUserSchema.validate(bodyData, { abortEarly: false })
         const updateUser = await updateUserService(id, updatedData);
         res.status(200).json({
             updateUser
