@@ -11,8 +11,16 @@ import enrollmentRoute from '../backend/routes/enrollmentRoute.js';
 import certificateRoute from '../backend/routes/certificateRoute.js';
 import recoveryRoute from '../backend/routes/recoveryRoute.js';
 import { errorHandler } from './middlewares/errorHandlerMulter.js';
+import cors from "cors";
 
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:5173',  
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use(express.json());
 
 app.use('/auth', loginRoute);

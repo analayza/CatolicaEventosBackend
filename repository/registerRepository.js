@@ -11,7 +11,7 @@ export async function registerRepository(name, email, password) {
                 password
             }
         })
-        return user;
+        return {name: user.name, email: user.email};
 
     } catch (error) {
         console.error("Erro registerRepository", error);

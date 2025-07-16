@@ -12,7 +12,7 @@ export async function registerAdminRepository(name, email, password,course) {
                 course
             }
         })
-        return admin;
+        return {name: admin.name, email: admin.email, course: admin.course}
 
     } catch (error) {
         console.error("Erro registerAdminRepository", error);
