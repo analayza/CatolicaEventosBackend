@@ -59,6 +59,12 @@ export async function updateUserController(req, res) {
             return res.status(409).json({
                 error: error.message
             })
+        }else if (error.message === "Digite a senha antiga para atualizar"
+            || error.message === "Digite a senha nova para atualizar"
+            || error.message === "Senha antiga incorreta!") {
+            return res.status(400).json({
+                error: error.message
+            })
         }
         return res.status(500).json({
             error: "Erro no servidor",

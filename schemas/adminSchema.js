@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const cursosValidos = ['Ciência da Computação', 'Direito', 'Educação Física', 'Marketing', 'Filosofia'];
+const cursosValidos = ['Ciências da Computação', 'Direito', 'Educação Física', 'Marketing', 'Filosofia'];
 
 
 const createUserAdminSchema = yup.object().shape({
