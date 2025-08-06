@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
-const EXPIRATION_TIME = '1h';
+const EXPIRATION_TIME = '2h';
 
 export default async function loginService(email, password) {
     const { user, role } = await loginRepository(email);

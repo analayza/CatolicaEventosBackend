@@ -118,7 +118,7 @@ export async function listAllEventsByAdminController(req, res) {
         })
     } catch (error) {
         if (error.message === "O administrador ainda não criou nenhum evento.") {
-            return res.status(404).json({
+            return res.status(200).json({
                 error: error.message
             })
         }

@@ -9,6 +9,6 @@ const route = express.Router();
 route.get('/preview/:id_event', authMiddleware, validateAdminType, previewCertificateController);
 route.post('/create' , authMiddleware, validateAdminType, generateCertificateController);
 route.get('/my', authMiddleware, findAllCertificatesOfUserController);
-route.get('/validation', certificateValidationControlle);
+route.get('/validation/:id_certificate', certificateValidationControlle);
 
 export default route;

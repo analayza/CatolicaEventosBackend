@@ -79,7 +79,7 @@ export async function findAllCertificatesOfUserController(req, res) {
 
 export async function certificateValidationControlle(req,res) {
     try{
-        const {id_certificate} = req.body;
+        const {id_certificate} = req.params;
         const validationCertificate = await certificateValidationService(id_certificate);
 
         if (!validationCertificate) {
