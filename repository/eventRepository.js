@@ -33,9 +33,9 @@ export async function findEventByIdRepository(id_event) { //Busca o evento e ati
         where: {
             id_event,
         },
-        include: {
-            activities: true,
-        }
+        // include: {
+        //     activities: true,
+        // }
     });
 }
 

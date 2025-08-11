@@ -3,6 +3,7 @@ import { createEventController, deleteEventController, disableEventController, f
 import authMiddleware from '../middlewares/authMiddleware.js';
 import validateAdminType from '../middlewares/validateAdminType.js';
 import { uploadImages } from '../middlewares/multerMiddleware.js';
+import { findAllActivityOfEventController } from '../controllers/activityController.js';
 
 const route = express.Router();
 route.post('/create', authMiddleware, validateAdminType,
@@ -15,5 +16,6 @@ route.patch('/update/:id_event', authMiddleware, validateAdminType,
 route.patch('/disable/:id_event', authMiddleware, validateAdminType, disableEventController);
 route.delete('/delete/:id_event', authMiddleware, validateAdminType, deleteEventController);
 route.get('/sponsors/:id_event', findSponsoresOfOneEventController);
+route.get('/:id_event/activities', findAllActivityOfEventController);
 
 export default route;

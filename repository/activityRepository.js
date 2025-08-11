@@ -57,6 +57,19 @@ export async function findActivityByIdRepository(id_activity) {
     }
 }
 
+export async function findAllActivitiesOfEventRepository(id_event){
+    try{
+        const activitys = await prisma.activity.findMany({
+            where: {id_event: id_event}
+        })
+        return activitys;
+    }catch (error) {
+        console.error(error);
+        throw new Error("Erro findAllActivityOfEvent " + error.message);
+    }
+}
+
+
 export async function deleteActivityRepository(id_activity) {
     try {
         const deleteActivity = await prisma.activity.delete({

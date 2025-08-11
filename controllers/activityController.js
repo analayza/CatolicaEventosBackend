@@ -1,11 +1,12 @@
 import { ValidationError } from "yup";
-import {createActivitySchema, updateActivitySchema } from "../schemas/activitySchema.js";
+import { createActivitySchema, updateActivitySchema } from "../schemas/activitySchema.js";
 import createActivityService from "../services/activity/createActivityService.js";
 import deleteActivityService from "../services/activity/deleteActivityService.js";
 import disableActivityService from "../services/activity/disableActivityService.js";
 import findActivityByIdService from "../services/activity/findActivityByIdService.js";
 import updateActivityService from "../services/activity/updateActivityService.js";
 import findAllUsersEnrollmentActivityService from "../services/enrollment/findAllUsersEnrollmentActivityService.js";
+import findAllActivitiesOfEventService from "../services/activity/findAllActivitiesOfEventService.js";
 
 export async function createActivityController(req, res) {
     try {
@@ -66,7 +67,7 @@ export async function updateActivityController(req, res) {
         }
         if (error.message === "Evento associado à atividade não encontrado." ||
             error.message === "Atividade não encontrada."
-        ){
+        ) {
             return res.status(404).json({
                 error: error.message
             })
@@ -113,6 +114,21 @@ export async function findActivityByIdController(req, res) {
                 error: error.message
             })
         }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function findAllActivityOfEventController(req, res) {
+    try {
+        const {id_event} = req.params;
+        const activities = await findAllActivitiesOfEventService(id_event);
+        return res.status(200).json({
+            activities,
+            total: activities.length
+        })
+    } catch (error) {
         return res.status(500).json({
             error: "Erro interno no servidor."
         })
@@ -169,14 +185,14 @@ export async function disableActivityController(req, res) {
 }
 
 export async function findAllUsersEnrollmentActivityController(req, res) {
-    try{
-        const {id_activity} = req.params;
+    try {
+        const { id_activity } = req.params;
         const allEnrollment = await findAllUsersEnrollmentActivityService(id_activity);
         return res.status(200).json({
             allEnrollment
         })
-    }catch(error){
-        if(error.message === "A atividade não existe."){
+    } catch (error) {
+        if (error.message === "A atividade não existe.") {
             return res.status(404).json({
                 error: error.message
             })
