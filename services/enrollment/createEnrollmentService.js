@@ -11,14 +11,32 @@ export default async function createEnrollmentService(id_user, id_activity) {
         }
         const existingActivity = await findActivityByIdRepository(id_activity);
         if (!existingActivity) {
-            throw new Error("A atividade não existe.");
+            throw new Error("Atividade inválida");
         }
         if (existingActivity.slots <= 0) {
             throw new Error("Não tem mais vagas nessa atividade.");
         }
         const existingEnrollment = await findUserEnrollment(id_user, id_activity);
-        if(existingEnrollment){
+        console.log("aqui: ", existingEnrollment);
+        if (existingEnrollment) {
             throw new Error("Você já está inscrito nessa atividade.");
+        }
+
+        if (!existingActivity.date) {
+            throw new Error("Data da atividade inválida.");
+        }
+        const now = new Date();
+        const activityDate = new Date(existingActivity.date);
+
+        const limitDate = new Date(activityDate);
+        limitDate.setHours(limitDate.getHours() - 1);
+
+        if (now >= activityDate) {
+            throw new Error("Não é possível se inscrever em uma atividade que já ocorreu.");
+        }
+
+        if (now >= limitDate) {
+            throw new Error("As inscrições para essa atividade se encerram 1 hora antes do início.");
         }
 
         if (existingActivity.price == 0) {
@@ -37,14 +55,16 @@ export default async function createEnrollmentService(id_user, id_activity) {
             return enrollment;
         }
     } catch (error) {
-        if(error.message === "O usuário não existe." ||
-            error.message === "A atividade não existe." ||
+        if (error.message === "O usuário não existe." ||
+            error.message === "Atividade inválida" ||
             error.message === "Não tem mais vagas nessa atividade." ||
-            error.message === "Você já está inscrito nessa atividade."
-        ){
+            error.message === "Você já está inscrito nessa atividade." ||
+            error.message === "Não é possível se inscrever em uma atividade que já ocorreu." ||
+            error.message === "As inscrições para essa atividade se encerram 1 hora antes do início."
+        ) {
             throw error;
         }
         throw new Error("Falha no servidor.");
-        
+
     }
 }

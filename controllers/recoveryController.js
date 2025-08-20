@@ -35,24 +35,34 @@ export async function forgotPasswordController(req, res) {
 
 export async function resetPasswordController(req, res) {
     try {
-        const email = req.email;
+        const emailDecod = req.email;
         const role = req.role;
-        const { newPassword } = req.body;
-
+        const { newPassword, email } = req.body;
+        console.log(email, emailDecod, role);
         if (role === 'user') {
-            await updatePasswordUserService(email, newPassword);
-            return res.status(200).json({
-                message: "Senha redefinida com sucesso."
-            })
+            if (emailDecod === email) {
+                await updatePasswordUserService(emailDecod, newPassword);
+                return res.status(200).json({
+                    message: "Senha redefinida com sucesso."
+                })
+            }else{
+                return res.status(404).json({
+                    message: "Erro Código Inválido"
+                })
+            }
         }
-
-        if(role === 'admin'){
-            await updatePasswordAdminService(email, newPassword);
-            return res.status(200).json({
-                message: "Senha redefinida com sucesso."
-            })
+        if (role === 'admin') {
+            if (emailDecod === email) {
+                await updatePasswordAdminService(emailDecod, newPassword);
+                return res.status(200).json({
+                    message: "Senha redefinida com sucesso."
+                })
+            }else{
+                return res.status(404).json({
+                    message: "Erro Código Inválido"
+                })
+            }
         }
-
     } catch (error) {
         if (error.message === "O usuário não existe") {
             return res.status(404).json({

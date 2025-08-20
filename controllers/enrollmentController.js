@@ -14,7 +14,7 @@ export async function createEnrollmentController(req, res) {
         })
     } catch (error) {
         if (error.message === "O usuário não existe." ||
-            error.message === "A atividade não existe.") {
+            error.message === "Atividade inválida") {
             return res.status(404).json({
                 error: error.message
             })
@@ -23,6 +23,13 @@ export async function createEnrollmentController(req, res) {
             error.message === "Você já está inscrito nessa atividade."
         ) {
             return res.status(409).json({
+                error: error.message
+            })
+        }
+        if (error.message === "Não é possível se inscrever em uma atividade que já ocorreu." ||
+            error.message === "As inscrições para essa atividade se encerram 1 hora antes do início."
+        ) {
+            return res.status(400).json({
                 error: error.message
             })
         }
@@ -87,11 +94,14 @@ export async function cancelEnrollmentController(req, res) {
                 error: error.message
             })
         }
-        if (error.message === "Não é possivél cancelar sua inscrição nessa atividade.") {
+        if (error.message === "Não é possível cancelar uma inscrição após o início da atividade." || 
+            error.message === "Data da atividade inválida."
+        ) {
             return res.status(409).json({
                 error: error.message
             })
         }
+        console.error(error);
         return res.status(500).json({
             error: "Erro interno no servidor."
         })

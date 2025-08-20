@@ -40,14 +40,13 @@ export async function updateStatusEnrollmentToPaid(id_enrollment) {
 
 export async function findUserEnrollment(id_user, id_activity) {
     try {
-        const existingEnrollment = await prisma.enrollment.findUnique({
+        const existingEnrollment = await prisma.enrollment.findFirst({
             where: {
-                id_user_id_activity: {
                     id_user,
-                    id_activity
-                }
+                    id_activity   
             }
         })
+        console.log("Aqui repository: ", existingEnrollment)
         return existingEnrollment;
     } catch (error) {
         console.error(error);
@@ -118,7 +117,7 @@ export async function findActivityParticipatedUserRepository(id_user) {
 
 export async function cancelEnrollmentRepository(id_user, id_activity) {
     try {
-        const cancelEnrollment = await prisma.enrollment.findUnique({
+        const cancelEnrollment = await prisma.enrollment.delete({
             where: {
                 id_user_id_activity: {
                     id_user,
@@ -133,24 +132,24 @@ export async function cancelEnrollmentRepository(id_user, id_activity) {
     }
 }
 
-export async function updateEnrollmentStatusToCanceled(id_enrollment) {
-    try {
-        const existingEnrollment = await prisma.enrollment.findUnique({
-            where: { id_enrollment }
-        });
-        if (!existingEnrollment) {
-            throw new Error("Inscrição não encontrada.");
-        }
-        const updateStatusEnrollment = await prisma.enrollment.update({
-            where: { id_enrollment },
-            data: { status: "CANCELED" }
-        })
-        return updateStatusEnrollment;
-    } catch (error) {
-        console.error(error);
-        throw new Error("Erro updateStatusEnrollmentRepository " + error.message);
-    }
-}
+// export async function updateEnrollmentStatusToCanceled(id_enrollment) {
+//     try {
+//         const existingEnrollment = await prisma.enrollment.findUnique({
+//             where: { id_enrollment }
+//         });
+//         if (!existingEnrollment) {
+//             throw new Error("Inscrição não encontrada.");
+//         }
+//         const updateStatusEnrollment = await prisma.enrollment.update({
+//             where: { id_enrollment },
+//             data: { status: "CANCELED" }
+//         })
+//         return updateStatusEnrollment;
+//     } catch (error) {
+//         console.error(error);
+//         throw new Error("Erro updateStatusEnrollmentRepository " + error.message);
+//     }
+// }
 
 export async function findEnrollmentRepository(id_enrollment) {
     try {

@@ -43,6 +43,7 @@ export async function findAllCertificatesOfUserRepository(id_user) {
                 }
             },
             select: {
+                id_certificate: true,
                 pdf_link: true,
                 activity_name: true, 
                 enrollment: {
