@@ -7,6 +7,8 @@ import findActivityByIdService from "../services/activity/findActivityByIdServic
 import updateActivityService from "../services/activity/updateActivityService.js";
 import findAllUsersEnrollmentActivityService from "../services/enrollment/findAllUsersEnrollmentActivityService.js";
 import findAllActivitiesOfEventService from "../services/activity/findAllActivitiesOfEventService.js";
+import activationActivityService from "../services/activity/activationActivityService.js";
+import findAllActivityActiveOfEventService from "../services/activity/findAllActivitiesActiveOfEventService.js";
 
 export async function createActivityController(req, res) {
     try {
@@ -95,9 +97,9 @@ export async function updateActivityController(req, res) {
 
 export async function findActivityByIdController(req, res) {
     try {
-        const id_admin = req.user.userId;
+        //const id_admin = req.user.userId;
         const { id_activity } = req.params;
-        const activity = await findActivityByIdService(id_activity, id_admin);
+        const activity = await findActivityByIdService(id_activity);
         return res.status(200).json({
             activity
         })
@@ -122,11 +124,34 @@ export async function findActivityByIdController(req, res) {
 
 export async function findAllActivityOfEventController(req, res) {
     try {
+        const id_admin = req.user.userId;
         const {id_event} = req.params;
-        const activities = await findAllActivitiesOfEventService(id_event);
+        console.log(id_admin)
+        const activities = await findAllActivitiesOfEventService(id_event, id_admin);
         return res.status(200).json({
             activities,
             total: activities.length
+        })
+    } catch (error) {
+        if (error.message === "Evento não encontrado" ||
+            error.message === "Você não tem permissão para essa ação.") {
+            return res.status(401).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
+    }
+}
+
+export async function findAllActivityActiveOfEventController(req, res) {
+    try {
+        const {id_event} = req.params;
+        const activitiesActive = await findAllActivityActiveOfEventService(id_event);
+        return res.status(200).json({
+            activitiesActive,
+            total: activitiesActive.length
         })
     } catch (error) {
         return res.status(500).json({
@@ -138,7 +163,8 @@ export async function findAllActivityOfEventController(req, res) {
 export async function deleteActivityController(req, res) {
     try {
         const { id_activity } = req.params;
-        await deleteActivityService(id_activity);
+        const id_admin = req.user.userId;
+        await deleteActivityService(id_activity, id_admin);
         return res.status(204).send();
     } catch (error) {
         if (error.message === "O evento não existe." ||
@@ -183,6 +209,33 @@ export async function disableActivityController(req, res) {
         })
     }
 }
+
+export async function activationActivityController(req, res) {
+    try {
+        const id_admin = req.user.userId;
+        const { id_activity } = req.params;
+        const activationActivity = await activationActivityService(id_activity, id_admin);
+        return res.status(200).json({
+            activationActivity
+        })
+    } catch (error) {
+        if (error.message === "Atividade não encontrada."
+            || error.message === "O evento não foi encontrado") {
+            return res.status(404).json({
+                error: error.message
+            })
+        }
+        if (error.message === "Você não tem permissão para ativar essa atividade") {
+            return res.status(403).json({
+                error: error.message
+            })
+        }
+        return res.status(500).json({
+            error: "Falha no servidor."
+        })
+    }
+}
+
 
 export async function findAllUsersEnrollmentActivityController(req, res) {
     try {

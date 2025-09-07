@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from 'express';
 import loginRoute from '../backend/routes/loginRoute.js';
 import registerRoute from '../backend/routes/registerRoute.js';
@@ -11,18 +12,31 @@ import enrollmentRoute from '../backend/routes/enrollmentRoute.js';
 import certificateRoute from '../backend/routes/certificateRoute.js';
 import recoveryRoute from '../backend/routes/recoveryRoute.js';
 import { errorHandler } from './middlewares/errorHandlerMulter.js';
-import cors from "cors";
+
 
 const app = express();
 
-app.use(cors({
-  origin: 'http://localhost:5173', 
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'], 
-  credentials: true
-}));
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", 'Access-Control-Allow-Methods'],
+};
 
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+//   // Responder às requisições preflight
+//   if (req.method === 'OPTIONS') {
+//     res.sendStatus(200);
+//   } else {
+//     next();
+//   }
+// });
 
 app.use(express.json());
 

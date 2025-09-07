@@ -80,7 +80,7 @@ export async function updateEventRepository(id, updateDataEvent) {
     }
 }
 
-export async function deleteEventRepository(id) { //testar
+export async function deleteEventRepository(id) { 
     try {
         const deletedEvent = await prisma.event.delete({
             where: {
@@ -104,6 +104,20 @@ export async function disableEvent(id_event) {
     } catch (error) {
         console.error("Erro disableEvent");
         throw new Error("Erro ao tentar desabilitar um evento" + error.message);
+
+    }
+}
+
+export async function activationEvent(id_event) { 
+    try {
+        const updateActivationEvent = await prisma.event.update({
+            where: { id_event: id_event },
+            data: { status: "active" }
+        })
+        return updateActivationEvent;
+    } catch (error) {
+        console.error("Erro activationEvent");
+        throw new Error("Erro ao tentar ativar um evento" + error.message);
 
     }
 }

@@ -9,6 +9,7 @@ import { ValidationError } from "yup";
 import { createEventSchema } from '../schemas/eventSchema.js';
 import { updateEventSchema } from '../schemas/eventSchema.js';
 import { findSponsoresOfOneEventService } from "../services/sponsor/findSponsorOfEventService.js";
+import activationEventService from "../services/event/activationEventService.js";
 
 export async function createEventController(req, res) {
     try {
@@ -190,13 +191,83 @@ export async function updateEventController(req, res) {
     }
 }
 
+// export async function disableEventController(req, res) {
+//     try {
+//         const id_admin = req.user.userId;
+//         const { id_event } = req.params;
+//         const eventDesible = await disableEventService(id_event, id_admin);
+//         return res.status(200).json({
+//             eventDesible
+//         })
+//     } catch (error) {
+//         if (error.message === "Evento não encontrado") {
+//             return res.status(404).json({
+//                 error: error.message
+//             })
+//         }
+//         if (error.message === "Você não tem permissão para desativar este evento.") {
+//             return res.status(403).json({
+//                 error: error.message
+//             })
+//         }
+//         return res.status(500).json({
+//             error: "Erro interno no servidor."
+//         })
+//     }
+// }
+
 export async function disableEventController(req, res) {
+    console.log('\n=== DISABLE EVENT CONTROLLER DEBUG ===');
+    console.log('🎯 Controller iniciado');
+    console.log('👤 req.user:', req.user);
+    console.log('📋 req.params:', req.params);
+    console.log('🔍 Method:', req.method);
+    console.log('🔍 URL:', req.originalUrl);
+    
     try {
         const id_admin = req.user.userId;
         const { id_event } = req.params;
+        
+        console.log('🆔 ID Admin extraído:', id_admin);
+        console.log('🎪 ID Event extraído:', id_event);
+        console.log('📞 Chamando disableEventService...');
+        
         const eventDesible = await disableEventService(id_event, id_admin);
+        
+        console.log('✅ Service executado com sucesso');
+        console.log('📤 Retornando resposta:', eventDesible);
+        console.log('=====================================\n');
+        
+        return res.status(200).json({ eventDesible });
+        
+    } catch (error) {
+        console.log('💥 Erro capturado no controller:');
+        console.log('❌ Error message:', error.message);
+        console.log('❌ Error stack:', error.stack);
+        console.log('=====================================\n');
+        
+        if (error.message === "Evento não encontrado") {
+            console.log('🚫 Retornando 404 - Evento não encontrado');
+            return res.status(404).json({ error: error.message });
+        }
+        
+        if (error.message === "Você não tem permissão para desativar este evento.") {
+            console.log('🚫 Retornando 403 - Sem permissão');
+            return res.status(403).json({ error: error.message });
+        }
+        
+        console.log('🚫 Retornando 500 - Erro interno');
+        return res.status(500).json({ error: "Erro interno no servidor." });
+    }
+}
+
+export async function activationEventController(req, res) {
+    try {
+        const id_admin = req.user.userId;
+        const { id_event } = req.params;
+        const eventActive = await activationEventService(id_event, id_admin);
         return res.status(200).json({
-            eventDesible
+            eventActive
         })
     } catch (error) {
         if (error.message === "Evento não encontrado") {
@@ -204,7 +275,7 @@ export async function disableEventController(req, res) {
                 error: error.message
             })
         }
-        if (error.message === "Você não tem permissão para desativar este evento.") {
+        if (error.message === "Você não tem permissão para ativar este evento.") {
             return res.status(403).json({
                 error: error.message
             })
@@ -214,6 +285,7 @@ export async function disableEventController(req, res) {
         })
     }
 }
+
 
 export async function deleteEventController(req, res) {
     try {

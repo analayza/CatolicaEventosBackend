@@ -42,8 +42,8 @@ export async function findUserEnrollment(id_user, id_activity) {
     try {
         const existingEnrollment = await prisma.enrollment.findFirst({
             where: {
-                    id_user,
-                    id_activity   
+                id_user,
+                id_activity
             }
         })
         console.log("Aqui repository: ", existingEnrollment)
@@ -60,7 +60,14 @@ export async function findAllUsersEnrollmentActivityRepository(id_activity) {
             where: { id_activity, status: "PAID" },
             include: { user: true }
         })
-        return allEnrollment.map(allE => allE.user);
+        return allEnrollment.map(enrollment => ({
+            id_enrollment: enrollment.id_enrollment,
+            id_user: enrollment.user.id_user,
+            name: enrollment.user.name,
+            email: enrollment.user.email,
+            profile_picture: enrollment.user.profile_picture,
+        })
+        );
     } catch (error) {
         console.error(error);
         throw new Error("Erro findAllUsersEnrollmentActivityRepository " + error.message);

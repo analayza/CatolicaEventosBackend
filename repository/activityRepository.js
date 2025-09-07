@@ -69,6 +69,19 @@ export async function findAllActivitiesOfEventRepository(id_event){
     }
 }
 
+export async function findAllActivitiesActiveOfEventRepository(id_event){
+    try{
+        const activitysActive = await prisma.activity.findMany({
+            where: {id_event: id_event,
+                status: 'active'
+            }
+        })
+        return activitysActive;
+    }catch (error) {
+        console.error(error);
+        throw new Error("Erro findAllActivitiesActiveOfEventRepository " + error.message);
+    }
+}
 
 export async function deleteActivityRepository(id_activity) {
     try {
@@ -99,6 +112,23 @@ export async function disableActivityRepository(id_activity) {
     } catch (error) {
         console.error(error);
         throw new Error("Erro disableActivityRepository " + error.message);
+    }
+}
+
+export async function activationActivityRepository(id_activity) {
+    try {
+        const activationActivity = await prisma.activity.update({
+            where: {
+                id_activity: id_activity
+            },
+            data: {
+                status: 'active'
+            }
+        })
+        return activationActivity;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro activationActivityRepository " + error.message);
     }
 }
 
