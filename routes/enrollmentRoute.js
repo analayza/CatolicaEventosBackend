@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleware from '../middlewares/authMiddleware.js';
-import { cancelEnrollmentController, createEnrollmentController, findActivityParticipatedUserController, findEventsParticipatedUserController, validationEnrollmentController} from '../controllers/enrollmentController.js';
+import { cancelEnrollmentController, createEnrollmentController, findActivityParticipatedUserController, findEventsParticipatedUserController, IsUserEnrolledController, validationEnrollmentController} from '../controllers/enrollmentController.js';
 import validateAdminType from '../middlewares/validateAdminType.js';
 
 const route = express.Router();
@@ -10,5 +10,6 @@ route.get('/my-events', authMiddleware, findEventsParticipatedUserController);
 route.get('/:id_event/my-activitys', authMiddleware, findActivityParticipatedUserController);
 route.delete('/:id_activity', authMiddleware, cancelEnrollmentController);
 route.get('/validate-enrollment/:id_enrollment', validationEnrollmentController);
+route.get('/:id_activity/status', authMiddleware, IsUserEnrolledController);
 
 export default route;

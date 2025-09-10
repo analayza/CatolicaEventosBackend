@@ -46,8 +46,8 @@ export async function findUserEnrollment(id_user, id_activity) {
                 id_activity
             }
         })
-        console.log("Aqui repository: ", existingEnrollment)
         return existingEnrollment;
+        
     } catch (error) {
         console.error(error);
         throw new Error("Erro findUserEnrollment " + error.message);

@@ -3,6 +3,7 @@ import findEventsParticipatedUserService from "../services/enrollment/findEvents
 import findActivityParticipatedUserService from "../services/enrollment/findActivityParticipateUserService.js";
 import cancelEnrollmentService from "../services/enrollment/cancelEnrollmentService.js";
 import validationEnrollmentService from "../services/enrollment/validationEnrollmentService.js";
+import { IsUserEnrolledService } from "../services/enrollment/isUserEnrolled.js";
 
 export async function createEnrollmentController(req, res) {
     try {
@@ -94,7 +95,7 @@ export async function cancelEnrollmentController(req, res) {
                 error: error.message
             })
         }
-        if (error.message === "Não é possível cancelar uma inscrição após o início da atividade." || 
+        if (error.message === "Não é possível cancelar uma inscrição após o início da atividade." ||
             error.message === "Data da atividade inválida."
         ) {
             return res.status(409).json({
@@ -181,5 +182,21 @@ export async function validationEnrollmentController(req, res) {
             `)
         }
         return res.status(500).send("Erro interno no servidor.");
+    }
+}
+
+export async function IsUserEnrolledController(req, res) {
+    try {
+        const id_user = req.user.userId;
+        const { id_activity } = req.params;
+        const enrollmentExists = await IsUserEnrolledService(id_user, id_activity);
+        
+        return res.status(200).json({
+            enrollmentExists
+        })
+    }catch(error){
+        return res.status(500).json({
+            error: "Erro interno no servidor."
+        })
     }
 }

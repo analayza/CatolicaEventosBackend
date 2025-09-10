@@ -84,22 +84,28 @@ model Enrollment {
 
   user            User       @relation("UserEnrollments", fields: [id_user], references: [id_user])
   activity        Activity   @relation("ActivityEnrollments", fields: [id_activity], references: [id_activity])
-  payments        Payment[]  @relation("EnrollmentPayments")
+  payment        Payment?  
   certificates    Certificate[] @relation("EnrollmentCertificates")
   
   @@unique([id_user, id_activity])
 }
 
 model Payment {
-  id_payment      String   @id @default(uuid())
-  id_enrollment   String
-  transaction_id  String   @db.VarChar(100)
-  amount          Decimal  @db.Decimal(10,2)
-  method          String
-  status          String
-  payment_date    DateTime
+  id_payment     String      @id @default(uuid())
+  apiPaymentId   String      @unique
+  amount         Decimal     @db.Decimal(10,2)
+  method         String
+  createdAt      DateTime    @default(now())
+  expiresAt      DateTime
+  status         String
+  ticketUrl      String
+  paymentDate    DateTime?
 
-  enrollment      Enrollment @relation("EnrollmentPayments", fields: [id_enrollment], references: [id_enrollment])
+  enrollment     Enrollment?  @relation(fields: [id_enrollment], references: [id_enrollment])
+  id_enrollment  String?      @unique
+
+  eventSponsor   EventSponsor? @relation(fields: [id_eventSponsor], references: [id])
+  id_eventSponsor String?      @unique
 }
 
 model Certificate {
@@ -137,6 +143,8 @@ model EventSponsor {
   event       Event    @relation(fields: [id_event], references: [id_event])
   sponsor     Sponsor  @relation(fields: [id_sponsor], references: [id])
 
+   payment           Payment?
+   
   @@unique([id_event, id_sponsor]) // evita duplicidade
 }
 
